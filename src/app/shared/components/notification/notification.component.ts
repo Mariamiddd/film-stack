@@ -107,6 +107,22 @@ import { NotificationService } from '../../../core/services/notification.service
     .close-btn:hover {
       color: white;
     }
+
+    @media (max-width: 480px) {
+      .notification-container {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+        min-width: 0;
+        padding: 12px 16px;
+        gap: 16px;
+      }
+      
+      @keyframes slideIn {
+        from { transform: translateY(100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+    }
   `]
 })
 export class NotificationComponent {

@@ -15,6 +15,7 @@ import { LayoutService } from '../../../core/services/layout.service';
           <span class="logo-icon">🎬</span>
           <span class="logo-text">Film<span>Stack</span></span>
         </a>
+        <button class="close-sidebar-btn" (click)="layout.closeSidebar()">✕</button>
       </div>
 
       <nav class="sidebar-nav">
@@ -90,6 +91,19 @@ import { LayoutService } from '../../../core/services/layout.service';
 
     .sidebar-header {
       margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .close-sidebar-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 4px;
     }
 
     .logo {
@@ -182,6 +196,9 @@ import { LayoutService } from '../../../core/services/layout.service';
       .sidebar-overlay.open {
         opacity: 1;
         pointer-events: auto;
+      }
+      .close-sidebar-btn {
+        display: block;
       }
     }
   `]

@@ -353,6 +353,7 @@ import { FormsModule } from '@angular/forms';
     @media (max-width: 1024px) {
       .topbar {
         padding: 0 20px;
+        height: 70px;
       }
       .burger-menu {
         display: block;
@@ -365,6 +366,35 @@ import { FormsModule } from '@angular/forms';
     @media (max-width: 768px) {
       .search-container {
         display: none;
+      }
+      .user-actions {
+        margin-left: auto;
+        gap: 16px;
+      }
+      .inbox-dropdown {
+        position: fixed;
+        top: 70px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        max-width: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .topbar {
+        padding: 0 12px;
+        height: 60px;
+      }
+      .user-meta {
+        gap: 8px;
+      }
+      .avatar-container {
+        width: 32px;
+        height: 32px;
+      }
+      .inbox-dropdown {
+        top: 60px;
       }
     }
   `]
