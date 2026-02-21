@@ -1,0 +1,94 @@
+<div class="details-container">
+    <div class="header-actions">
+        <button class="back-button" (click)="goBack()">← Back</button>
+        <div class="header-button-group">
+            <button class="wishlist-btn" (click)="toggleWishlist()" [class.in-wishlist]="isInWishlist()">
+                {{ isInWishlist() ? '❤️ In Wishlist' : '🤍 Add to Wishlist' }}
+            </button>
+            <button class="favorite-btn" (click)="toggleFavorite()" [class.is-favorite]="isInFavorites()">
+                {{ isInFavorites() ? '⭐ Favorite' : '☆ Add to Favorites' }}
+            </button>
+        </div>
+    </div>
+
+    @if (isLoading()) {
+    <div class="loading">Loading movie details...</div>
+    } @else if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+    } @else {
+    @if (movie(); as m) {
+    <div class="movie-content">
+        <div class="poster-section">
+            <img [src]="getPosterUrl(m.poster_path)" [alt]="m.title || m.name" class="detail-poster" />
+
+            <!-- Purchase/Watch Section -->
+            <div class="action-section">
+                @if (!authService.isAuthenticated()) {
+                <div class="auth-required">
+                    <p>🔒 Sign in to purchase and watch</p>
+                    <a routerLink="/auth/sign-in" class="auth-btn">Sign In</a>
+                </div>
+                } @else {
+                @if (hasPurchased()) {
+                <div class="purchased-badge">
+                    <span class="check-icon">✓</span> Purchased
+                </div>
+                <button class="watch-btn" (click)="toggleTrailer()">
+                    {{ showTrailer() ? '✕ Close Trailer' : '▶ Watch Movie' }}
+                </button>
+                } @else {
+                <div class="purchase-section">
+                    <div class="price-tag">$4.99</div>
+                    <button class="purchase-btn" (click)="purchaseMovie()" [disabled]="isPurchasing()">
+                        @if (isPurchasing()) {
+                        <span class="spinner"></span>
+                        Processing...
+                        } @else {
+                        🎬 Purchase Movie
+                        }
+                    </button>
+                    <p class="purchase-note">One-time purchase • Watch anytime</p>
+                </div>
+                }
+                }
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h1>{{ m.title || m.name }}</h1>
+            <div class="meta-info">
+                <div class="meta-item rating-chip">
+                    <span class="icon">⭐</span>
+                    <span>{{ m.vote_average | number:'1.1-1' }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="icon">📅</span>
+                    <span>{{ (m.release_date || m.first_air_date) | date:'MMM yyyy' }}</span>
+                </div>
+                @if (m.runtime) {
+                <div class="meta-item">
+                    <span class="icon">🕒</span>
+                    <span>{{ m.runtime }} min</span>
+                </div>
+                }
+            </div>
+            <p class="overview">{{ m.overview }}</p>
+
+            <!-- Trailer Player -->
+            @if (showTrailer() && hasPurchased()) {
+            <div class="trailer-container">
+                <h2>🎬 Now Playing</h2>
+                <div class="video-wrapper">
+                    <iframe [src]="getTrailerUrl()" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen class="trailer-player">
+                    </iframe>
+                </div>
+                <p class="trailer-note">Enjoying the movie? Rate it and share with friends!</p>
+            </div>
+            }
+        </div>
+    </div>
+    }
+    }
+</div>

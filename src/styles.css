@@ -1,1 +1,105 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+    /* Dark Premium Cinema Palette */
+    --bg-deep: #0f0f15;
+    --bg-surface: #1a1a24;
+    --bg-sidebar: rgba(26, 26, 36, 0.8);
+    
+    --primary: #9d89ff;        /* Vibrant Purple/Lavender */
+    --primary-glow: rgba(157, 137, 255, 0.4);
+    --secondary: #2a2a3a;
+    
+    --text-main: #ffffff;
+    --text-muted: #9494a5;
+    --text-dim: #5c5c6e;
+    
+    --accent: #ff4d6d;         /* Subtle Pink/Red accent */
+    
+    --shadow-main: 0 10px 30px rgba(0, 0, 0, 0.4);
+    --sidebar-width: 260px;
+    --border-radius: 20px;
+    --glass-border: rgba(255, 255, 255, 0.05);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-deep);
+    color: var(--text-main);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* Layout Structure */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--bg-deep);
+}
+
+.main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 1024px) {
+    .main-content {
+        margin-left: 0;
+        padding-bottom: 80px; /* Space for mobile nav */
+    }
+}
+
+h1, h2, h3 {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: none;
+    transition: all 0.2s ease;
+}
+
+::selection {
+    background: var(--primary);
+    color: white;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-dim);
+}
