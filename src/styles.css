@@ -1,27 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
 
 :root {
-    /* Dark Premium Cinema Palette */
-    --bg-deep: #0f0f15;
-    --bg-surface: #1a1a24;
-    --bg-sidebar: rgba(26, 26, 36, 0.8);
+    /* Sunset Teal Editorial Palette */
+    --bg-deep: #081110;
+    --bg-surface: #142321;
+    --bg-sidebar: rgba(20, 35, 33, 0.85);
 
-    --primary: #9d89ff;
-    /* Vibrant Purple/Lavender */
-    --primary-glow: rgba(157, 137, 255, 0.4);
-    --secondary: #2a2a3a;
+    --primary: #ff6f59;
+    /* Sunset Coral */
+    --primary-glow: rgba(255, 111, 89, 0.35);
+    --primary-shadow: rgba(255, 111, 89, 0.2);
 
-    --text-main: #ffffff;
-    --text-muted: #9494a5;
-    --text-dim: #5c5c6e;
+    --secondary: #254441;
+    /* Deep Teal */
+    --accent: #43aa8b;
+    /* Sea Green */
+    --accent-glow: rgba(67, 170, 139, 0.3);
 
-    --accent: #ff4d6d;
-    /* Subtle Pink/Red accent */
+    --text-main: #f8fafc;
+    --text-muted: #94a3a8;
+    --text-dim: #5c7075;
 
-    --shadow-main: 0 10px 30px rgba(0, 0, 0, 0.4);
+    --shadow-main: 0 15px 35px rgba(0, 0, 0, 0.5);
     --sidebar-width: 260px;
-    --border-radius: 20px;
-    --glass-border: rgba(255, 255, 255, 0.05);
+    --border-radius: 24px;
+    --glass-border: rgba(255, 255, 255, 0.04);
 }
 
 * {
@@ -48,6 +51,8 @@ body {
 
 .main-content {
     flex: 1;
+    min-width: 0;
+    /* Allow the flex item to shrink below its content size */
     margin-left: var(--sidebar-width);
     padding: 24px;
     display: flex;

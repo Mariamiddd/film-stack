@@ -10,6 +10,7 @@ export interface Movie {
   name?: string;
   media_type?: 'movie' | 'tv';
   poster_path: string | null;
+  backdrop_path?: string | null;
   overview: string;
   release_date?: string;
   first_air_date?: string;
@@ -40,6 +41,19 @@ export interface VideoResult {
   site: string;
   type: string;
   official: boolean;
+}
+
+export interface Cast {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string | null;
+  order: number;
+}
+
+export interface CreditsResponse {
+  id: number;
+  cast: Cast[];
 }
 
 interface TmdbResponse {
@@ -149,6 +163,12 @@ export class TmdbService {
 
   getTvDetails(id: string): Observable<Movie> {
     return this.fetch<Movie>(`/tv/${id}`);
+  }
+
+  getCredits(id: number, type: 'movie' | 'tv' = 'movie'): Observable<Cast[]> {
+    return this.fetch<CreditsResponse>(`/${type}/${id}/credits`).pipe(
+      map(res => res.cast ?? [])
+    );
   }
 
   getMovieVideos(id: number, type: 'movie' | 'tv' = 'movie'): Observable<VideoResult[]> {

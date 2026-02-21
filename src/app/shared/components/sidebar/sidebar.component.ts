@@ -31,27 +31,36 @@ import { LayoutService } from '../../../core/services/layout.service';
           </a>
         </div>
 
-        <div class="nav-group">
-          <p class="group-title">Personal</p>
-          <a routerLink="/auth/profile" [queryParams]="{tab: 'purchases'}" routerLinkActive="active" class="nav-item">
-            <span class="icon">🎬</span> My Movies
-          </a>
-          <a routerLink="/auth/profile" [queryParams]="{tab: 'watchlist'}" routerLinkActive="active" class="nav-item">
-            <span class="icon">🕒</span> Watchlist
-          </a>
-          <a routerLink="/auth/profile" [queryParams]="{tab: 'favorites'}" routerLinkActive="active" class="nav-item">
-            <span class="icon">⭐</span> Favorites
-          </a>
-          <a routerLink="/auth/profile" [queryParams]="{tab: 'downloads'}" routerLinkActive="active" class="nav-item">
-            <span class="icon">📥</span> Downloads
-          </a>
-        </div>
+        @if (authService.isAuthenticated()) {
+          <div class="nav-group">
+            <p class="group-title">Personal</p>
+            <a routerLink="/auth/profile" [queryParams]="{tab: 'purchases'}" routerLinkActive="active" class="nav-item">
+              <span class="icon">🎬</span> My Movies
+            </a>
+            <a routerLink="/auth/profile" [queryParams]="{tab: 'watchlist'}" routerLinkActive="active" class="nav-item">
+              <span class="icon">🕒</span> Watchlist
+            </a>
+            <a routerLink="/auth/profile" [queryParams]="{tab: 'favorites'}" routerLinkActive="active" class="nav-item">
+              <span class="icon">⭐</span> Favorites
+            </a>
+            <a routerLink="/auth/profile" [queryParams]="{tab: 'downloads'}" routerLinkActive="active" class="nav-item">
+              <span class="icon">📥</span> Downloads
+            </a>
+          </div>
 
-        <div class="nav-group footer-group">
-          <a routerLink="/auth/profile" [queryParams]="{tab: 'settings'}" class="nav-item">
-            <span class="icon">⚙️</span> Settings
-          </a>
-        </div>
+          <div class="nav-group footer-group">
+            <a routerLink="/auth/profile" [queryParams]="{tab: 'settings'}" class="nav-item">
+              <span class="icon">⚙️</span> Settings
+            </a>
+          </div>
+        } @else {
+          <div class="nav-group auth-prompt">
+            <p class="group-title">Account</p>
+            <a routerLink="/auth/sign-in" class="nav-item login-prompt">
+              <span class="icon">👤</span> Sign in for more
+            </a>
+          </div>
+        }
       </nav>
     </aside>
 
@@ -175,10 +184,30 @@ import { LayoutService } from '../../../core/services/layout.service';
     }
 
     .footer-group {
-      margin-top: 16px;
+      margin-top: auto;
       border-top: 1px solid var(--glass-border);
       padding-top: 12px;
       margin-bottom: 32px;
+    }
+
+    .auth-prompt {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--glass-border);
+      margin-bottom: 32px;
+    }
+
+    .login-prompt {
+      background: linear-gradient(135deg, rgba(255, 111, 89, 0.12) 0%, rgba(255, 111, 89, 0.05) 100%);
+      border: 1px solid rgba(255, 111, 89, 0.2);
+      color: var(--primary);
+      margin-top: 8px;
+    }
+
+    .login-prompt:hover {
+      background: rgba(255, 111, 89, 0.18);
+      transform: translateY(-2px);
+      color: var(--text-main);
     }
 
     .logout-btn {

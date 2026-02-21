@@ -2,7 +2,7 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { TmdbService, Movie } from '../../core/services/tmdb.service';
+import { TmdbService, Movie, Cast } from '../../core/services/tmdb.service';
 import { AuthService } from '../../core/services/auth.service';
 import { PurchaseService } from '../../core/services/purchase.service';
 import { WishlistService } from '../../core/services/wishlist.service';
@@ -32,6 +32,7 @@ export class MovieDetailsComponent implements OnInit {
 
   // State using Signals
   movie = signal<Movie | null>(null);
+  cast = signal<Cast[]>([]);
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
@@ -75,6 +76,7 @@ export class MovieDetailsComponent implements OnInit {
         this.movie.set(data);
         if (data) {
           this.loadTrailer(data.id, type);
+          this.loadCredits(data.id, type);
         }
         this.isLoading.set(false);
       },
@@ -85,8 +87,24 @@ export class MovieDetailsComponent implements OnInit {
     });
   }
 
+  private loadCredits(id: number, type: 'movie' | 'tv') {
+    this.tmdbService.getCredits(id, type).subscribe({
+      next: (cast) => this.cast.set(cast.slice(0, 10)),
+      error: () => this.cast.set([])
+    });
+  }
+
   getPosterUrl(path: string | null): string {
     return this.tmdbService.getPosterUrl(path);
+  }
+
+  getCastImageUrl(path: string | null): string {
+    return path ? `https://image.tmdb.org/t/p/w185${path}` : 'https://via.placeholder.com/185x278.png?text=No+Photo';
+  }
+
+  getBackdropUrl(path: string | null): string {
+    const p = this.movie()?.backdrop_path || path;
+    return p ? `https://image.tmdb.org/t/p/original${p}` : '';
   }
 
   goBack(): void {

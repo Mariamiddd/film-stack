@@ -1,92 +1,123 @@
-<div class="details-container">
-    <div class="header-actions">
-        <button class="back-button" (click)="goBack()">← Back</button>
-        <div class="header-button-group">
-            <button class="wishlist-btn" (click)="toggleWishlist()" [class.in-wishlist]="isInWishlist()">
-                {{ isInWishlist() ? '❤️ In Wishlist' : '🤍 Add to Wishlist' }}
-            </button>
-            <button class="favorite-btn" (click)="toggleFavorite()" [class.is-favorite]="isInFavorites()">
-                {{ isInFavorites() ? '⭐ Favorite' : '☆ Add to Favorites' }}
-            </button>
-        </div>
-    </div>
-
+<div class="details-view">
     @if (isLoading()) {
-    <div class="loading">Loading movie details...</div>
+    <div class="loading-overlay">
+        <span class="spinner"></span>
+        <p>Fetching cinema data...</p>
+    </div>
     } @else if (errorMessage()) {
-    <div class="error">{{ errorMessage() }}</div>
+    <div class="error-container">
+        <p>{{ errorMessage() }}</p>
+        <button (click)="goBack()" class="btn-back">Go Back</button>
+    </div>
     } @else {
     @if (movie(); as m) {
-    <div class="movie-content">
-        <div class="poster-section">
-            <img [src]="getPosterUrl(m.poster_path)" [alt]="m.title || m.name" class="detail-poster" />
+    <!-- Hero Backdrop -->
+    <div class="movie-backdrop" [style.background-image]="'url(' + getBackdropUrl(m.poster_path) + ')'">
+        <div class="backdrop-overlay"></div>
+    </div>
 
-            <!-- Purchase/Watch Section -->
-            <div class="action-section">
-                @if (!authService.isAuthenticated()) {
-                <div class="auth-required">
-                    <p>🔒 Sign in to purchase and watch</p>
-                    <a routerLink="/auth/sign-in" class="auth-btn">Sign In</a>
+    <div class="content-wrapper">
+        <div class="movie-main-info">
+            <!-- Left: Poster & Quick Actions -->
+            <div class="side-panel">
+                <div class="poster-container">
+                    <img [src]="getPosterUrl(m.poster_path)" [alt]="m.title || m.name" class="movie-poster" />
+                    @if (hasPurchased()) {
+                    <div class="owned-badge">✓ Owned</div>
+                    }
                 </div>
-                } @else {
-                @if (hasPurchased()) {
-                <div class="purchased-badge">
-                    <span class="check-icon">✓</span> Purchased
-                </div>
-                <button class="watch-btn" (click)="toggleTrailer()">
-                    {{ showTrailer() ? '✕ Close Trailer' : '▶ Watch Movie' }}
-                </button>
-                } @else {
-                <div class="purchase-section">
-                    <div class="price-tag">$4.99</div>
-                    <button class="purchase-btn" (click)="purchaseMovie()" [disabled]="isPurchasing()">
+
+                <div class="action-card">
+                    <div class="price-info">
+                        @if (!hasPurchased()) {
+                        <span class="price">$4.99</span>
+                        <span class="type">Digital Purchase</span>
+                        } @else {
+                        <span class="price">Ready to Watch</span>
+                        <span class="type">You own this title</span>
+                        }
+                    </div>
+
+                    @if (!hasPurchased()) {
+                    <button class="btn-primary btn-purchase" (click)="purchaseMovie()" [disabled]="isPurchasing()">
                         @if (isPurchasing()) {
                         <span class="spinner"></span>
-                        Processing...
                         } @else {
-                        🎬 Purchase Movie
+                        🎬 Purchase Now
                         }
                     </button>
-                    <p class="purchase-note">One-time purchase • Watch anytime</p>
-                </div>
-                }
-                }
-            </div>
-        </div>
+                    } @else {
+                    <button class="btn-primary btn-watch" (click)="toggleTrailer()">
+                        {{ showTrailer() ? '✕ Close Player' : '▶ Watch Now' }}
+                    </button>
+                    }
 
-        <div class="info-section">
-            <h1>{{ m.title || m.name }}</h1>
-            <div class="meta-info">
-                <div class="meta-item rating-chip">
-                    <span class="icon">⭐</span>
-                    <span>{{ m.vote_average | number:'1.1-1' }}</span>
+                    <div class="secondary-actions">
+                        <button class="btn-secondary" (click)="toggleWishlist()" [class.active]="isInWishlist()">
+                            {{ isInWishlist() ? '❤️ In Watchlist' : '🕒 Watchlist' }}
+                        </button>
+                        <button class="btn-secondary" (click)="toggleFavorite()" [class.active]="isInFavorites()">
+                            {{ isInFavorites() ? '⭐ Favorited' : '☆ Favorite' }}
+                        </button>
+                    </div>
                 </div>
-                <div class="meta-item">
-                    <span class="icon">📅</span>
-                    <span>{{ (m.release_date || m.first_air_date) | date:'MMM yyyy' }}</span>
+            </div>
+
+            <!-- Right: Detailed Info -->
+            <div class="main-panel">
+                <button class="floating-back" (click)="goBack()">← Back to browse</button>
+
+                <div class="title-meta">
+                    <h1 class="movie-title">{{ m.title || m.name }}</h1>
+                    <div class="badges">
+                        <span class="badge rating">⭐ {{ m.vote_average | number:'1.1-1' }}</span>
+                        <span class="badge year">{{ (m.release_date || m.first_air_date) | date:'yyyy' }}</span>
+                        @if (m.runtime) {
+                        <span class="badge duration">{{ m.runtime }} min</span>
+                        }
+                        <span class="badge lang">{{ (m.original_language || 'en') | uppercase }}</span>
+                    </div>
                 </div>
-                @if (m.runtime) {
-                <div class="meta-item">
-                    <span class="icon">🕒</span>
-                    <span>{{ m.runtime }} min</span>
+
+                <div class="description-section">
+                    <h3>Storyline</h3>
+                    <p class="overview">{{ m.overview }}</p>
+                </div>
+
+                @if (cast().length > 0) {
+                <div class="cast-section">
+                    <h3>Top Cast</h3>
+                    <div class="cast-list">
+                        @for (actor of cast(); track actor.id) {
+                        <div class="cast-card">
+                            <div class="actor-img">
+                                <img [src]="getCastImageUrl(actor.profile_path)" [alt]="actor.name">
+                            </div>
+                            <div class="actor-info">
+                                <span class="actor-name">{{ actor.name }}</span>
+                                <span class="actor-char">{{ actor.character }}</span>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+                }
+
+                @if (showTrailer() && hasPurchased()) {
+                <div class="player-section" #playerContainer>
+                    <div class="section-title">
+                        <h3>Now Playing</h3>
+                        <button class="close-player" (click)="toggleTrailer()">✕</button>
+                    </div>
+                    <div class="video-container">
+                        <iframe [src]="getTrailerUrl()" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
                 </div>
                 }
             </div>
-            <p class="overview">{{ m.overview }}</p>
-
-            <!-- Trailer Player -->
-            @if (showTrailer() && hasPurchased()) {
-            <div class="trailer-container">
-                <h2>🎬 Now Playing</h2>
-                <div class="video-wrapper">
-                    <iframe [src]="getTrailerUrl()" frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen class="trailer-player">
-                    </iframe>
-                </div>
-                <p class="trailer-note">Enjoying the movie? Rate it and share with friends!</p>
-            </div>
-            }
         </div>
     </div>
     }
