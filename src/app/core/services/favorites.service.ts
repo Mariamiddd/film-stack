@@ -1,4 +1,6 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
+import { NotificationService } from './notification.service';
+
 
 export interface FavoriteItem {
     movieId: number;
@@ -63,6 +65,8 @@ export class FavoriteService {
         localStorage.setItem(this.storageKey, JSON.stringify(this.favorites()));
     }
 
+    private readonly notificationService = inject(NotificationService);
+
     addToFavorites(movieId: number, movieTitle: string, posterPath: string | null): boolean {
         if (this.isInFavorites(movieId)) {
             return false;
@@ -77,8 +81,16 @@ export class FavoriteService {
 
         this.favorites.update(f => [...f, item]);
         this.saveFavorites();
+
+        this.notificationService.addInboxItem(
+            'Added to Favorites',
+            `"${movieTitle}" has been added to your favorites list.`,
+            'favorite'
+        );
+
         return true;
     }
+
 
     removeFromFavorites(movieId: number): void {
         this.favorites.update(f => f.filter(item => item.movieId !== movieId));

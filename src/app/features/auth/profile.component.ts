@@ -39,7 +39,6 @@ import { MovieCardComponent } from '../../shared/components/movie-card/movie-car
                  <span class="lab">Favorites</span>
               </div>
            </div>
-           <button (click)="authService.signOut()" class="logout-card-btn">Sign Out</button>
         </div>
       </div>
 

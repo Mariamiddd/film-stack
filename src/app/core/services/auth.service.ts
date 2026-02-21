@@ -6,6 +6,8 @@ import { tap, catchError, switchMap, map } from 'rxjs/operators';
 import { FavoriteService } from './favorites.service';
 import { WishlistService } from './wishlist.service';
 import { PurchaseService } from './purchase.service';
+import { NotificationService } from './notification.service';
+
 
 // ─── Interfaces ──────────────────────────────────────────
 
@@ -69,6 +71,8 @@ export class AuthService {
   private readonly favoriteService = inject(FavoriteService);
   private readonly wishlistService = inject(WishlistService);
   private readonly purchaseService = inject(PurchaseService);
+  private readonly notificationService = inject(NotificationService);
+
 
   private readonly baseUrl = 'https://api.everrest.educata.dev/auth';
 
@@ -259,7 +263,9 @@ export class AuthService {
     this.favoriteService.initializeForUser(userId);
     this.wishlistService.initializeForUser(userId);
     this.purchaseService.initializeForUser(userId);
+    this.notificationService.initializeForUser(userId);
   }
+
 
   private handleSignOut(): void {
     this.clearAuthState();
@@ -277,7 +283,9 @@ export class AuthService {
     this.favoriteService.reset();
     this.wishlistService.reset();
     this.purchaseService.reset();
+    this.notificationService.reset();
   }
+
 
   private getHeaders(): HttpHeaders {
     const token = this.accessToken();

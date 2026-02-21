@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, HostListener, ElementRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { LayoutService } from '../../../core/services/layout.service';
@@ -26,14 +26,47 @@ import { FormsModule } from '@angular/forms';
       </div>
 
       <div class="user-actions">
-        <button class="action-btn" title="Notifications" (click)="showNotifications()">
-          <span class="icon">🔔</span>
-          @if (hasNotifications()) {
-            <span class="badge"></span>
+        <div class="notification-wrapper">
+          <button class="action-btn" title="Recent Activity" (click)="toggleInbox()">
+            <span class="icon">🔔</span>
+            @if (notificationService.unreadCount() > 0) {
+              <span class="badge">{{ notificationService.unreadCount() }}</span>
+            }
+          </button>
+
+          @if (showInbox()) {
+            <div class="inbox-dropdown">
+              <div class="inbox-header">
+                <h3>Activity Feed</h3>
+                <button class="clear-all" (click)="notificationService.markAllAsRead()">Mark all as read</button>
+              </div>
+              <div class="inbox-list">
+                @for (item of notificationService.inbox(); track item.id) {
+                  <div class="inbox-item" [class.unread]="!item.read" (click)="notificationService.markAsRead(item.id)">
+                    <div class="item-icon">
+                      @if (item.type === 'purchase') { 🎬 }
+                      @else if (item.type === 'favorite') { ⭐ }
+                      @else { 🔔 }
+                    </div>
+                    <div class="item-content">
+                      <p class="item-title">{{ item.title }}</p>
+                      <p class="item-message">{{ item.message }}</p>
+                      <span class="item-time">{{ formatTime(item.timestamp) }}</span>
+                    </div>
+                  </div>
+                } @empty {
+                  <div class="empty-inbox">
+                    <span class="icon">✨</span>
+                    <p>No recent activity</p>
+                  </div>
+                }
+              </div>
+            </div>
           }
-        </button>
+        </div>
         
         <div class="profile-link">
+
           @if (authService.isAuthenticated()) {
             <div class="user-meta">
               <div class="avatar-container" [routerLink]="['/auth/profile']">
@@ -131,14 +164,140 @@ import { FormsModule } from '@angular/forms';
 
     .badge {
       position: absolute;
-      top: -2px;
-      right: -2px;
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
+      top: -6px;
+      right: -6px;
+      background: var(--primary);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      border-radius: 10px;
       border: 2px solid var(--bg-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
+    .notification-wrapper {
+      position: relative;
+    }
+
+    .inbox-dropdown {
+      position: absolute;
+      top: calc(100% + 15px);
+      right: -100px;
+      width: 360px;
+      background: var(--bg-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      overflow: hidden;
+      animation: dropdownFade 0.2s ease-out;
+    }
+
+    @keyframes dropdownFade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .inbox-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .inbox-header h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .clear-all {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .inbox-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .inbox-item {
+      padding: 16px 20px;
+      display: flex;
+      gap: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .inbox-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .inbox-item.unread {
+      background: rgba(157, 137, 255, 0.05);
+    }
+
+    .item-icon {
+      font-size: 1.25rem;
+      padding-top: 2px;
+    }
+
+    .item-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .item-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--text-main);
+    }
+
+    .item-message {
+      font-size: 0.85rem;
+      margin: 0;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+
+    .item-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .empty-inbox {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-dim);
+    }
+
+    .empty-inbox .icon {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .empty-inbox p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
 
     .sign-in-btn {
       background: var(--primary);
@@ -156,25 +315,25 @@ import { FormsModule } from '@angular/forms';
     }
 
     .logout-mini-btn {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.2);
-      color: #ef4444;
-      padding: 6px;
-      border-radius: 8px;
-      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: var(--text-dim);
+      padding: 8px;
+      border-radius: 10px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .logout-mini-btn:hover {
-      background: #ef4444;
-      color: white;
-      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.3);
       transform: translateY(-2px);
     }
+
 
     .avatar-container {
       width: 40px;
@@ -213,15 +372,35 @@ import { FormsModule } from '@angular/forms';
 export class TopbarComponent {
   readonly authService = inject(AuthService);
   readonly layout = inject(LayoutService);
-  private readonly notificationService = inject(NotificationService);
+  readonly notificationService = inject(NotificationService);
+  private readonly el = inject(ElementRef);
 
-  hasNotifications = signal(true); // Mocking notifications for UI
+  showInbox = signal(false);
 
-  showNotifications() {
-    this.notificationService.show(
-      'You are all caught up! No new messages or releases.',
-      'info'
-    );
-    this.hasNotifications.set(false); // Clear badge on click
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    // Close the inbox if clicking outside the entire topbar or specifically this component
+    if (!this.el.nativeElement.contains(target)) {
+      this.showInbox.set(false);
+    }
+  }
+
+  toggleInbox() {
+    this.showInbox.update(v => !v);
+  }
+
+
+  formatTime(date: Date): string {
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+
+    if (minutes < 1) return 'now';
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    return date.toLocaleDateString();
   }
 }
+

@@ -1,4 +1,6 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
+import { NotificationService } from './notification.service';
+
 
 export interface Purchase {
     movieId: number;
@@ -67,6 +69,8 @@ export class PurchaseService {
         localStorage.setItem(this.storageKey, JSON.stringify(this.purchases()));
     }
 
+    private readonly notificationService = inject(NotificationService);
+
     purchaseMovie(movieId: number, movieTitle: string, posterPath: string | null = null, price: number = 4.99, mediaType: 'movie' | 'tv' = 'movie'): boolean {
         // Check if already purchased
         if (this.hasPurchased(movieId)) {
@@ -84,8 +88,16 @@ export class PurchaseService {
 
         this.purchases.update(p => [...p, purchase]);
         this.savePurchases();
+
+        this.notificationService.addInboxItem(
+            'New Purchase',
+            `You successfully purchased "${movieTitle}"!`,
+            'purchase'
+        );
+
         return true;
     }
+
 
     hasPurchased(movieId: number): boolean {
         return this.purchases().some(p => p.movieId === movieId);

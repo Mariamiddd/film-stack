@@ -1,4 +1,6 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
+import { NotificationService } from './notification.service';
+
 
 export interface WishlistItem {
     movieId: number;
@@ -63,6 +65,8 @@ export class WishlistService {
         localStorage.setItem(this.storageKey, JSON.stringify(this.wishlist()));
     }
 
+    private readonly notificationService = inject(NotificationService);
+
     addToWishlist(movieId: number, movieTitle: string, posterPath: string | null): boolean {
         if (this.isInWishlist(movieId)) {
             return false;
@@ -77,8 +81,16 @@ export class WishlistService {
 
         this.wishlist.update(w => [...w, item]);
         this.saveWishlist();
+
+        this.notificationService.addInboxItem(
+            'Added to Watchlist',
+            `"${movieTitle}" has been added to your watchlist.`,
+            'system'
+        );
+
         return true;
     }
+
 
     removeFromWishlist(movieId: number): void {
         this.wishlist.update(w => w.filter(item => item.movieId !== movieId));
