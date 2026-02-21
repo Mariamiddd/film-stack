@@ -88,7 +88,9 @@ export class TmdbService {
     const allParams = { api_key: API_KEY, language: 'en-US', ...params };
     const query = new URLSearchParams(allParams).toString();
     const fullUrl = `${BASE_URL}${path}?${query}`;
-    return `https://corsproxy.io/?${encodeURIComponent(fullUrl)}`;
+
+    // Return the TMDB URL directly without the proxy wrapper
+    return fullUrl;
   }
 
   private fetch<T>(path: string, params: Record<string, string> = {}): Observable<T> {
