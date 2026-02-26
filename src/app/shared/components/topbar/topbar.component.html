@@ -30,43 +30,21 @@
         </nav>
     </div>
 
-    <div class="topbar-center">
-        <div class="search-container">
-            <svg class="search-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="text" placeholder="Search..." class="search-input" [ngModel]="searchService.query()"
-                (ngModelChange)="onSearchInput($event)" (focus)="onSearchFocus()" />
-            @if (searchService.query()) {
-            <button class="clear-search" (click)="clearSearch()">✕</button>
-            }
 
-            @if (showResults() && searchResults().length > 0) {
-            <div class="search-results-dropdown card-flat">
-                <div class="dropdown-header">Top Results</div>
-                @for (item of searchResults().slice(0, 6); track item.id) {
-                <div class="search-result-item" [routerLink]="getContentLink(item)" (click)="closeAll()">
-                    <div class="result-poster">
-                        <img [src]="tmdb.getPosterUrl(item.poster_path)" alt="">
-                    </div>
-                    <div class="result-info">
-                        <p class="result-title">{{ item.title || item.name }}</p>
-                        <div class="result-meta">
-                            <span class="meta-year">{{ tmdb.getYear(item.release_date || item.first_air_date) }}</span>
-                            <span class="meta-dot"></span>
-                            <span class="meta-type">{{ item.media_type === 'tv' ? 'TV' : 'Movie' }}</span>
-                        </div>
-                    </div>
-                </div>
-                }
-            </div>
-            }
-        </div>
-    </div>
 
     <div class="user-actions">
+        <!-- Minimalist Expandable Search -->
+        <div class="search-wrapper" [class.expanded]="isSearchOpen()">
+            <button class="action-btn" (click)="toggleSearch()" aria-label="Toggle Search">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+
+        </div>
+
         <div class="notification-wrapper">
             <button class="action-btn" (click)="toggleInbox()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -164,3 +142,42 @@
     </div>
     }
 </header>
+
+@if (isSearchOpen()) {
+<div class="search-overlay-cinematic">
+    <div class="search-floating-content" (click)="$event.stopPropagation()">
+        <div class="search-bar-air">
+            <svg class="inner-search-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" placeholder="Type to search movies and series..." class="air-input"
+                [ngModel]="searchService.query()" (ngModelChange)="onSearchInput($event)" (focus)="onSearchFocus()"
+                (keydown)="onKeyDown($event)" #searchInput />
+            <button class="close-air" (click)="toggleSearch()">✕</button>
+        </div>
+
+        @if (searchResults().length > 0) {
+        <div class="search-results-air card-flat">
+            @for (item of searchResults().slice(0, 8); track item.id; let idx = $index) {
+            <div class="search-item-air" [class.active]="idx === selectedIndex()" [routerLink]="getContentLink(item)"
+                (click)="closeAll()">
+                <img [src]="tmdb.getPosterUrl(item.poster_path)" class="poster-air" alt="">
+                <div class="info-air">
+                    <p class="title-air">{{ item.title || item.name }}</p>
+                    <span class="year-air">{{ tmdb.getYear(item.release_date || item.first_air_date) }}</span>
+                </div>
+            </div>
+            }
+        </div>
+        } @else if (searchService.query().length > 0) {
+        <div class="search-results-air card-flat">
+            <div class="no-results-air">
+                Exploring the cinematic archives for "{{ searchService.query() }}"...
+            </div>
+        </div>
+        }
+    </div>
+</div>
+}

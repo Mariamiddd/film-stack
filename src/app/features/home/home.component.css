@@ -31,23 +31,22 @@
   padding: 0;
   position: relative;
   z-index: 20;
-  margin-top: -32px;
+  margin-top: -50px;
+
 }
 
 .mood-dial-card {
   padding: 20px 32px;
-  background: rgba(18, 18, 20, 0.4);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   gap: 16px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
-  max-width: 1320px;
-  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .mood-header.compact {
@@ -84,7 +83,8 @@
   flex: 1;
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-highlight);
+  opacity: 0.6;
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -108,7 +108,7 @@
 
 .mood-icon-card {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--text-highlight);
   padding: 10px;
   border-radius: 8px;
   display: flex;
@@ -138,7 +138,7 @@
 .mood-tag {
   font-size: 0.55rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-highlight);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
@@ -159,8 +159,8 @@
 .genre-pill {
   padding: 10px 24px;
   background: #f1f1f1;
-  color: #555;
-  border: none;
+  color: var(--text-highlight);
+  border: 1px solid var(--text-highlight);
   border-radius: 50px;
   font-size: 0.85rem;
   font-weight: 700;

@@ -1,4 +1,4 @@
-import { Component, inject, signal, HostListener, ElementRef } from '@angular/core';
+import { Component, inject, signal, HostListener, ElementRef, viewChild } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { LayoutService } from '../../../core/services/layout.service';
@@ -27,7 +27,21 @@ export class TopbarComponent {
 
   showInbox = signal(false);
   showResults = signal(false);
+  isSearchOpen = signal(false);
   searchResults = signal<Movie[]>([]);
+  selectedIndex = signal(-1);
+  searchInput = viewChild<ElementRef>('searchInput');
+
+  toggleSearch() {
+    this.isSearchOpen.update(v => !v);
+    if (!this.isSearchOpen()) {
+      this.clearSearch();
+    } else {
+      this.selectedIndex.set(-1);
+      setTimeout(() => this.searchInput()?.nativeElement.focus(), 100);
+    }
+  }
+
 
   private searchSubject = new Subject<string>();
 
@@ -47,6 +61,15 @@ export class TopbarComponent {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
+
+    // If search is open, check if we clicked the overlay backdrop
+    if (this.isSearchOpen()) {
+      if (target.classList.contains('search-overlay-cinematic')) {
+        this.toggleSearch();
+      }
+      return;
+    }
+
     if (!this.el.nativeElement.contains(target)) {
       this.showInbox.set(false);
       this.showResults.set(false);
@@ -57,6 +80,31 @@ export class TopbarComponent {
     this.searchService.setQuery(query);
     this.searchSubject.next(query);
     this.showResults.set(true);
+    this.selectedIndex.set(-1);
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    if (!this.isSearchOpen() || this.searchResults().length === 0) return;
+
+    const results = this.searchResults().slice(0, 8);
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      this.selectedIndex.update(i => (i + 1) % results.length);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.selectedIndex.update(i => (i - 1 + results.length) % results.length);
+    } else if (event.key === 'Enter') {
+      if (this.selectedIndex() >= 0) {
+        event.preventDefault();
+        const selected = results[this.selectedIndex()];
+        const link = this.getContentLink(selected);
+        this.router.navigate(link);
+        this.closeAll();
+      }
+    } else if (event.key === 'Escape') {
+      this.toggleSearch();
+    }
   }
 
   onSearchFocus() {
@@ -73,6 +121,7 @@ export class TopbarComponent {
 
   closeAll() {
     this.showResults.set(false);
+    this.isSearchOpen.set(false); // Close search when navigating
     this.layout.closeSidebar();
   }
 
