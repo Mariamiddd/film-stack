@@ -1,0 +1,166 @@
+<header class="topbar">
+    <div class="topbar-left">
+        <button class="menu-trigger" (click)="layout.toggleSidebar()" aria-label="Toggle Menu">
+            <span class="vcr-icon">MENU</span>
+        </button>
+
+        <a routerLink="/" class="logo" (click)="closeAll()">
+            <span class="logo-icon">
+                <img src="https://res.cloudinary.com/dehx2iulz/image/upload/v1772091322/film-reel_jva2jz.png"
+                    alt="Movieland Logo">
+            </span>
+            <span class="logo-text">MOVIE<span>LAND</span></span>
+        </a>
+
+        <nav class="top-nav">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+                HOME
+            </a>
+            <a routerLink="/movies" routerLinkActive="active" class="nav-link">
+                MOVIES
+            </a>
+            <a routerLink="/tv-shows" routerLinkActive="active" class="nav-link">
+                SERIES
+            </a>
+            @if (authService.isAdmin()) {
+            <a routerLink="/admin" routerLinkActive="active" class="nav-link admin-link">
+                CONTROL
+            </a>
+            }
+        </nav>
+    </div>
+
+    <div class="topbar-center">
+        <div class="search-container">
+            <svg class="search-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" placeholder="Search..." class="search-input" [ngModel]="searchService.query()"
+                (ngModelChange)="onSearchInput($event)" (focus)="onSearchFocus()" />
+            @if (searchService.query()) {
+            <button class="clear-search" (click)="clearSearch()">✕</button>
+            }
+
+            @if (showResults() && searchResults().length > 0) {
+            <div class="search-results-dropdown card-flat">
+                <div class="dropdown-header">Top Results</div>
+                @for (item of searchResults().slice(0, 6); track item.id) {
+                <div class="search-result-item" [routerLink]="getContentLink(item)" (click)="closeAll()">
+                    <div class="result-poster">
+                        <img [src]="tmdb.getPosterUrl(item.poster_path)" alt="">
+                    </div>
+                    <div class="result-info">
+                        <p class="result-title">{{ item.title || item.name }}</p>
+                        <div class="result-meta">
+                            <span class="meta-year">{{ tmdb.getYear(item.release_date || item.first_air_date) }}</span>
+                            <span class="meta-dot"></span>
+                            <span class="meta-type">{{ item.media_type === 'tv' ? 'TV' : 'Movie' }}</span>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+
+    <div class="user-actions">
+        <div class="notification-wrapper">
+            <button class="action-btn" (click)="toggleInbox()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                @if (notificationService.unreadCount() > 0) {
+                <span class="badge">{{ notificationService.unreadCount() }}</span>
+                }
+            </button>
+
+            @if (showInbox()) {
+            <div class="inbox-dropdown card-flat">
+                <div class="inbox-header">
+                    <h3>System Notifications</h3>
+                    <div class="header-actions">
+                        <button class="text-btn" (click)="notificationService.markAllAsRead()">READ ALL</button>
+                        <button class="close-inbox" (click)="showInbox.set(false)">✕</button>
+                    </div>
+                </div>
+                <div class="inbox-list">
+                    @for (item of notificationService.inbox(); track item.id) {
+                    <div class="inbox-item" [class.unread]="!item.read" (click)="onNotificationClick(item)">
+                        <div class="item-status"></div>
+                        <div class="item-content">
+                            <div class="item-meta">
+                                <span class="item-type">{{ item.type }}</span>
+                                <span class="item-time">{{ formatTime(item.timestamp) }}</span>
+                            </div>
+                            <p class="item-title">{{ item.title }}</p>
+                            <p class="item-message">{{ item.message }}</p>
+                        </div>
+                    </div>
+                    } @empty {
+                    <div class="inbox-empty">
+                        <p>No new transmissions</p>
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+
+        <div class="profile-link">
+            @if (authService.isAuthenticated()) {
+            <div class="profile-container">
+                <div class="avatar-container" [routerLink]="['/auth/profile']" (click)="closeAll()">
+                    <img [src]="authService.currentUser()?.avatar || 'assets/default-avatar.png'" alt="P">
+                </div>
+                <button class="logout-text-btn" (click)="authService.signOut(); closeAll()">LOGOUT</button>
+            </div>
+            } @else {
+            <a routerLink="/auth/sign-in" class="sign-in-link">SIGN IN</a>
+            }
+        </div>
+    </div>
+
+    <!-- Mobile Nav Overlay -->
+    @if (layout.isSidebarOpen()) {
+    <div class="mobile-nav-overlay" (click)="layout.closeSidebar()">
+        <nav class="mobile-nav" (click)="$event.stopPropagation()">
+            <div class="mobile-nav-header">
+                <span class="analog-label">MENU</span>
+                <button class="close-btn" (click)="layout.closeSidebar()">✕</button>
+            </div>
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="mobile-link"
+                (click)="closeAll()">
+                HOME
+            </a>
+            <a routerLink="/movies" routerLinkActive="active" class="mobile-link" (click)="closeAll()">
+                MOVIES
+            </a>
+            <a routerLink="/tv-shows" routerLinkActive="active" class="mobile-link" (click)="closeAll()">
+                SERIES
+            </a>
+            @if (authService.isAdmin()) {
+            <a routerLink="/admin" routerLinkActive="active" class="mobile-link admin-link" (click)="closeAll()">
+                ADMIN CONTROL
+            </a>
+            }
+            @if (authService.isAuthenticated()) {
+            <div class="mobile-divider"></div>
+            <a routerLink="/auth/profile" [queryParams]="{tab: 'watchlist'}" class="mobile-link"
+                (click)="closeAll()">WATCHLIST</a>
+            <a routerLink="/auth/profile" [queryParams]="{tab: 'favorites'}" class="mobile-link"
+                (click)="closeAll()">FAVORITES</a>
+            <div class="mobile-divider"></div>
+            <button class="mobile-link logout-btn" (click)="authService.signOut(); closeAll()">EJECT / LOGOUT</button>
+            } @else {
+            <div class="mobile-divider"></div>
+            <a routerLink="/auth/sign-in" class="mobile-link" (click)="closeAll()">SIGN IN</a>
+            }
+        </nav>
+    </div>
+    }
+</header>

@@ -1,0 +1,21 @@
+<aside class="workspace-sidebar">
+    <nav class="ws-nav-list card-flat">
+        <button class="ws-nav-item" [class.active]="activeTab === 'purchases'" (click)="setTab('purchases')">
+            My Purchases
+        </button>
+        <button class="ws-nav-item" [class.active]="activeTab === 'watchlist'" (click)="setTab('watchlist')">
+            Watchlist
+        </button>
+        <button class="ws-nav-item" [class.active]="activeTab === 'favorites'" (click)="setTab('favorites')">
+            Favorites
+        </button>
+        <div class="ws-nav-divider"></div>
+        <button class="ws-nav-item" [class.active]="activeTab === 'settings'" (click)="setTab('settings')">
+            Account Settings
+        </button>
+        <button class="ws-nav-item" [class.active]="activeTab === 'messages'" (click)="setTab('messages')">
+            Support Messages
+            @if (unreadMessages > 0) { <span class="badge-mini">{{ unreadMessages }}</span> }
+        </button>
+    </nav>
+</aside>

@@ -1,83 +1,90 @@
 <div class="home-view">
 
-  @if (isLoading() && movies().length === 0) {
+  @if (isLoading() && validMovies().length === 0) {
   <div class="loading-state">
-    <span class="spinner"></span>
-    <p>Preparing your cinema experience...</p>
+    <div class="spinner-minimal"></div>
+    <p>Calibrating Workspace...</p>
   </div>
   } @else {
-  <!-- Hero Section -->
-  @if (featuredMovie(); as movie) {
-  <section class="hero-container"
-    [style.background-image]="'url(https://image.tmdb.org/t/p/original' + movie.poster_path + ')'">
-    <div class="hero-overlay">
-      <div class="hero-content">
-        <span class="trending-badge">🔥 Now Trending</span>
-        <div class="genre-tags">
-          <span class="tag">Drama</span>
-          <span class="tag">Fantasy</span>
+  <section class="mood-selector-container">
+    <div class="grid-system">
+      <div class="mood-dial-card col-span-12">
+        <div class="mood-header compact">
+          <div class="segmented-control">
+            <div class="segment-slider"
+              [style.left.%]="intensity() === 'Soft' ? 0 : intensity() === 'Balanced' ? 33.3 : 66.6"></div>
+            <button class="segment-btn" [class.active]="intensity() === 'Soft'"
+              (click)="setIntensity('Soft')">SOFT</button>
+            <button class="segment-btn" [class.active]="intensity() === 'Balanced'"
+              (click)="setIntensity('Balanced')">MID</button>
+            <button class="segment-btn" [class.active]="intensity() === 'Elite'"
+              (click)="setIntensity('Elite')">ELITE</button>
+          </div>
         </div>
-        <h1 class="hero-title">{{ movie.title || movie.name }}</h1>
-        <p class="hero-description">{{ movie.overview }}</p>
 
-        <div class="hero-actions">
-          <a [routerLink]="['/movie', movie.id]" class="btn btn-primary">
-            <span class="icon">▶️</span> Watch Now
-          </a>
-          <button class="btn btn-secondary">
-            <span class="icon">➕</span>
-          </button>
-          <button class="btn btn-secondary">
-            <span class="icon">⋮</span>
-          </button>
+        <!-- 3x3 Visual Icon Grid -->
+        <div class="mood-icon-grid">
+          @for (m of moods; track m.label) {
+          <div class="mood-icon-card" [class.active]="currentMood().label === m.label"
+            (click)="themeService.setMood(m.value)">
+            <span class="mood-tag">{{ m.label }}</span>
+          </div>
+          }
         </div>
+
+        <!-- Genre Pills -->
+        <div class="genre-pills-container">
+          @for (genre of getMoodGenres(); track genre.id) {
+          <button class="genre-pill" [class.active]="activeGenre() === genre.id.toString()"
+            (click)="toggleGenre(genre.id.toString())">
+            {{ genre.name }}
+          </button>
+          }
+        </div>
+
       </div>
     </div>
   </section>
-  }
 
-  <!-- Content Sections -->
-  <div class="content-sections">
+  <!-- Content Workspace -->
+  <div class="workspace-layout grid-system">
 
-    <!-- Section: Continue Watching - Only for Authenticated Users -->
-    @if (authService.isAuthenticated()) {
-    <section class="content-section">
-      <div class="section-header">
-        <h2>Continue Watching</h2>
-        <a routerLink="/auth/profile" class="see-all">See All</a>
-      </div>
-      <div class="horizontal-scroll">
-        @for (movie of recommendedMovies().slice(0, 4); track movie.id) {
-        <div class="progress-card">
-          <app-movie-card [movie]="movie" [type]="movie.media_type === 'tv' ? 'tv' : 'movie'"></app-movie-card>
-          <div class="progress-bar-container">
-            <div class="progress-bar" [style.width]="(movie.id % 100) + '%'"></div>
+    <!-- Main Content Area (Now span 12 for better horizontal flow) -->
+    <div class="workspace-main col-span-12">
+      <!-- Section: Mood Recommendations -->
+      <section class="workspace-section glass-panel">
+        <div class="ws-header">
+          <div class="ws-header-title">
+            <h2>Current Selections</h2>
+            <p class="ws-header-sub">Hand-picked for your {{ currentMood().label }} vibe</p>
+          </div>
+          <a routerLink="/movies" class="ws-link-more">Full Catalog →</a>
+        </div>
+        <div class="scroll-wrapper">
+          <div class="scroll-controls">
+            <button class="scroll-btn prev" (click)="scrollMovies('left')" aria-label="Scroll Left">
+              <span class="vcr-icon">‹</span>
+            </button>
+            <button class="scroll-btn next" (click)="scrollMovies('right')" aria-label="Scroll Right">
+              <span class="vcr-icon">›</span>
+            </button>
+          </div>
+
+          <div class="ws-grid-inner scroll-container" #scrollContainer>
+            @for (movie of validMovies(); track movie.id) {
+            <app-movie-card [movie]="movie" [type]="movie.media_type === 'tv' ? 'tv' : 'movie'"></app-movie-card>
+            }
           </div>
         </div>
-        }
-      </div>
-    </section>
-    }
-
-    <!-- Section: You Might Like -->
-    <section class="content-section">
-      <div class="section-header">
-        <h2>You Might Like</h2>
-        <a routerLink="/movies" class="see-all">See All</a>
-      </div>
-      <div class="movies-grid">
-        @for (movie of recommendedMovies().slice(4); track movie.id) {
-        <app-movie-card [movie]="movie" [type]="movie.media_type === 'tv' ? 'tv' : 'movie'"></app-movie-card>
-        }
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
   }
 
   @if (errorMessage()) {
-  <div class="error-state">
+  <div class="error-container-figma card-flat">
     <p>{{ errorMessage() }}</p>
-    <button (click)="loadTrendingMovies()" class="retry-btn">Retry</button>
+    <button (click)="refreshContent()" class="btn-figma btn-primary-figma">Retry Sequence</button>
   </div>
   }
 </div>

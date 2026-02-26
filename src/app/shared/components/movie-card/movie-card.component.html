@@ -1,20 +1,19 @@
-<div class="movie-card" [routerLink]="getContentLink()">
+<div class="movie-card" [routerLink]="getContentLink()" (mouseenter)="onMouseEnter()">
     <div class="poster-wrapper">
+
         <img [src]="getPosterUrl(movie().poster_path)" [alt]="movie().title || movie().name" class="poster-image"
             loading="lazy" />
-        <div class="card-overlay"></div>
+
         <div class="card-rating">
-            <span>★</span> {{ movie().vote_average.toFixed(1) }}
+            {{ movie().vote_average.toFixed(1) }}
         </div>
 
         <div class="card-actions">
-            <button class="action-btn wishlist-btn" [class.active]="isInWishlist()" (click)="toggleWishlist($event)"
-                [title]="isInWishlist() ? 'Remove from Wishlist' : 'Add to Wishlist'">
-                <span class="icon">{{ isInWishlist() ? '❤️' : '🤍' }}</span>
+            <button class="action-btn" [class.active]="isInWishlist()" (click)="toggleWishlist($event)">
+                {{ isInWishlist() ? '✔ STORED' : '+ LIST' }}
             </button>
-            <button class="action-btn favorite-btn" [class.active]="isInFavorites()" (click)="toggleFavorite($event)"
-                [title]="isInFavorites() ? 'Remove from Favorites' : 'Add to Favorites'">
-                <span class="icon">{{ isInFavorites() ? '⭐' : '☆' }}</span>
+            <button class="action-btn" [class.active]="isInFavorites()" (click)="toggleFavorite($event)">
+                {{ isInFavorites() ? '❤ FAV' : '❤ LIKE' }}
             </button>
         </div>
     </div>
@@ -22,9 +21,7 @@
         <h3 class="movie-title">{{ movie().title || movie().name }}</h3>
         <div class="card-meta">
             <span class="meta-item">{{ getYear(movie().release_date || movie().first_air_date) }}</span>
-            <span class="meta-divider"></span>
-            <span class="meta-item" style="text-transform: capitalize;">{{ getLanguageName(movie().original_language)
-                }}</span>
+            <span class="meta-item">{{ movie().media_type === 'tv' ? 'SERIES' : 'FILM' }}</span>
         </div>
     </div>
 </div>

@@ -1,0 +1,178 @@
+<div class="workspace-layout profile-grid" id="profile-container">
+    @if (authService.isAuthenticated()) {
+    <!-- Profile Header Section -->
+    <app-profile-header class="profile-header-full" [user]="user()" [purchaseCount]="purchaseCount()"
+        [favoriteCount]="favoriteCount()">
+    </app-profile-header>
+
+    <!-- Sidebar Navigation -->
+    <app-profile-sidebar class="profile-sidebar-col" [activeTab]="activeTab()" [unreadMessages]="unreadMessages()"
+        (tabChange)="activeTab.set($event)">
+    </app-profile-sidebar>
+
+    <!-- Main Workspace Area -->
+    <main class="workspace-main profile-main-col" id="profile-main">
+        <div class="ws-view-container">
+            <!-- My Purchases -->
+            @if (activeTab() === 'purchases') {
+            <div class="info-section">
+                <h3 class="section-label">My Purchases</h3>
+                @if (purchases().length === 0) {
+                <div class="empty-workspace card-flat">
+                    <p>Core repository is empty.</p>
+                    <button routerLink="/" class="btn-figma btn-primary-figma">Scan for Media</button>
+                </div>
+                } @else {
+                <div class="ws-grid-inner">
+                    @for (purchase of purchases(); track purchase.movieId) {
+                    <div class="license-card card-flat">
+                        <div class="license-poster" [routerLink]="['/movie', purchase.movieId]">
+                            <img [src]="getPosterUrl(purchase.posterPath)" [alt]="purchase.movieTitle">
+                            <div class="license-tag">Active</div>
+                        </div>
+                        <div class="license-meta">
+                            <span class="l-title">{{ purchase.movieTitle }}</span>
+                            <div class="l-footer">
+                                <span class="l-date">{{ formatDate(purchase.purchaseDate) }}</span>
+                                <button class="btn-report" (click)="openReportModal(purchase)">Report Issue</button>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+            }
+
+            <!-- Watchlist -->
+            @if (activeTab() === 'watchlist') {
+            <div class="info-section">
+                <h3 class="section-label">Watchlist</h3>
+                @if (wishlistItems().length === 0) {
+                <div class="empty-workspace card-flat">
+                    <p>Your watchlist is empty.</p>
+                </div>
+                } @else {
+                <div class="ws-grid-inner">
+                    @for (item of wishlistItems(); track item.movieId) {
+                    <app-movie-card
+                        [movie]="{id: item.movieId, title: item.movieTitle, poster_path: item.posterPath, vote_average: item.rating || 0, overview: ''}"></app-movie-card>
+                    }
+                </div>
+                }
+            </div>
+            }
+
+            <!-- Favorites -->
+            @if (activeTab() === 'favorites') {
+            <div class="info-section">
+                <h3 class="section-label">Favorites</h3>
+                @if (favoriteItems().length === 0) {
+                <div class="empty-workspace card-flat">
+                    <p>You haven't added any favorites yet.</p>
+                </div>
+                } @else {
+                <div class="ws-grid-inner">
+                    @for (item of favoriteItems(); track item.movieId) {
+                    <app-movie-card
+                        [movie]="{id: item.movieId, title: item.movieTitle, poster_path: item.posterPath, vote_average: item.rating || 0, overview: ''}"></app-movie-card>
+                    }
+                </div>
+                }
+            </div>
+            }
+
+            <!-- Account Settings -->
+            @if (activeTab() === 'settings') {
+            <app-account-settings [formData]="formData" [passwordData]="passwordData" [isUpdating]="isUpdating()"
+                [isChangingPassword]="isChangingPassword()" [isDeleting]="isDeleting()"
+                [successMessage]="successMessage()" [errorMessage]="errorMessage()" (updateProfile)="updateProfile()"
+                (changePassword)="changePassword()" (deleteAccount)="confirmDelete()">
+            </app-account-settings>
+            }
+
+            <!-- Support Messages -->
+            @if (activeTab() === 'messages') {
+            <div class="info-section">
+                <h3 class="section-label">Support Communications</h3>
+                <div class="reports-history">
+                    @for (report of myReports(); track report.id) {
+                    <div class="report-entry card-flat">
+                        <div class="entry-header">
+                            <span class="entry-title">{{ report.movieTitle }}</span>
+                            <span class="entry-status">{{ report.status }}</span>
+                        </div>
+                        <p class="entry-reason">{{ report.reason }}</p>
+
+                        <div class="chat-bubbles">
+                            @for (msg of getMessages(report.id); track msg.id) {
+                            <div class="bubble" [class.me]="msg.senderId !== 'admin'">
+                                <p>{{ msg.message }}</p>
+                                <span class="b-time">{{ msg.timestamp | date:'shortTime' }}</span>
+                            </div>
+                            }
+                        </div>
+
+                        <div class="reply-box">
+                            <input type="text" [(ngModel)]="chatInputs[report.id]" placeholder="Reply to admin..."
+                                (keyup.enter)="sendReply(report)">
+                            <button (click)="sendReply(report)" class="btn-figma">Reply</button>
+                        </div>
+                    </div>
+                    } @empty {
+                    <div class="empty-workspace card-flat">
+                        <p>You haven't reported any issues yet.</p>
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+    </main>
+
+    <!-- Report Modal -->
+    @if (selectedPurchase()) {
+    <div class="modal-overlay" (click)="selectedPurchase.set(null)">
+        <div class="modal-content card-flat" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Report Issue: {{ selectedPurchase()?.movieTitle }}</h3>
+                <button class="close-modal" (click)="selectedPurchase.set(null)">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-field">
+                    <label>Reason for report</label>
+                    <select [(ngModel)]="reportForm.reason" class="figma-input">
+                        <option value="Movie isn't playing">Movie isn't playing</option>
+                        <option value="Audio/Video quality issue">Audio/Video quality issue</option>
+                        <option value="Wrong content">Wrong content</option>
+                        <option value="Other">Other (specify below)</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label>Detailed Explanation</label>
+                    <textarea [(ngModel)]="reportForm.details" class="figma-input"
+                        placeholder="Please describe the issue in detail..." rows="4"></textarea>
+                </div>
+                <button class="btn-figma btn-primary-figma" (click)="submitReport()"
+                    [disabled]="!reportForm.reason || !reportForm.details">
+                    Submit Report
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+    } @else {
+    <!-- Secure Gate -->
+    <div class="secure-gate card-flat">
+        <div class="gate-content">
+            <h1 class="gate-title">Authentication Required</h1>
+            <p class="gate-subtitle">Access to personal workstation is currently restricted. Please identify yourself.
+            </p>
+            <div class="gate-actions">
+                <button routerLink="/auth/sign-in" class="btn-figma btn-primary-figma">Establish link</button>
+                <button routerLink="/auth/sign-up" class="btn-figma btn-outline-figma">Register terminal</button>
+            </div>
+        </div>
+    </div>
+    }
+</div>

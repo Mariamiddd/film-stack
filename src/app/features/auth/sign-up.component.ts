@@ -1,7 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService, SignUpRequest } from '../../core/services/auth.service';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-sign-up',
@@ -12,7 +13,7 @@ import { AuthService, SignUpRequest } from '../../core/services/auth.service';
       <div class="auth-card signup-card">
         <div class="auth-header">
           <h1>Create Account</h1>
-          <p>Join FilmStack today</p>
+          <p>Join Movieland today</p>
         </div>
 
         @if (errorMessage()) {
@@ -180,9 +181,11 @@ import { AuthService, SignUpRequest } from '../../core/services/auth.service';
   `,
   styleUrls: ['./auth.css']
 })
-export class SignUpComponent {
+export class SignUpComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private titleService = inject(Title);
+  private metaService = inject(Meta);
 
   formData: SignUpRequest = {
     firstName: '',
@@ -199,6 +202,11 @@ export class SignUpComponent {
 
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
+
+  ngOnInit() {
+    this.titleService.setTitle('Create Account | Movieland');
+    this.metaService.updateTag({ name: 'description', content: 'Join Movieland today to curate your personal cinema collection.' });
+  }
 
   onSubmit() {
     // Check all required fields

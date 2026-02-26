@@ -1,0 +1,29 @@
+<header class="ws-header">
+    <div class="user-profile-summary">
+        <div class="avatar-frame card-flat">
+            @if (user?.avatar) {
+            <img [src]="user!.avatar" [alt]="user!.firstName" />
+            } @else {
+            <div class="avatar-initials">{{ getInitials() }}</div>
+            }
+        </div>
+        <div class="user-meta">
+            <h1 class="ws-title">{{ user?.firstName }} {{ user?.lastName }}</h1>
+            <p class="ws-subtitle">{{ user?.email }} &nbsp;•&nbsp; Digital Librarian</p>
+        </div>
+    </div>
+
+    <div class="ws-controls">
+        <div class="quick-stats-figma">
+            <div class="stat-item">
+                <span class="stat-label">Licensed</span>
+                <span class="stat-value">{{ purchaseCount }}</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-label">Saved</span>
+                <span class="stat-value">{{ favoriteCount }}</span>
+            </div>
+        </div>
+    </div>
+</header>

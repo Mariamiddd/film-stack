@@ -1,7 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-sign-in',
@@ -70,14 +71,21 @@ import { AuthService } from '../../core/services/auth.service';
   `,
   styleUrls: ['./auth.css']
 })
-export class SignInComponent {
+export class SignInComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private titleService = inject(Title);
+  private metaService = inject(Meta);
 
   email = '';
   password = '';
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
+
+  ngOnInit() {
+    this.titleService.setTitle('Sign In | Movieland');
+    this.metaService.updateTag({ name: 'description', content: 'Sign in to your Movieland account to access your library and preferences.' });
+  }
 
   onSubmit() {
     if (!this.email || !this.password) {

@@ -1,0 +1,74 @@
+<div class="info-section">
+    <h3 class="section-label">Account Settings</h3>
+    <div class="settings-grid">
+        <div class="settings-entry card-flat">
+            <h4>Personal Profile</h4>
+            <p class="settings-help">Manage your workstation identification and preferences.</p>
+
+            @if (successMessage) { <div class="banner-success-figma card-flat">{{ successMessage }}</div> }
+            @if (errorMessage) { <div class="banner-error-figma card-flat">{{ errorMessage }}</div> }
+
+            <form (ngSubmit)="onUpdateProfile()" class="figma-form">
+                <div class="form-row-ws">
+                    <div class="form-field">
+                        <label>First Name</label>
+                        <input type="text" [(ngModel)]="formData.firstName" name="firstName" [disabled]="isUpdating"
+                            class="figma-input">
+                    </div>
+                    <div class="form-field">
+                        <label>Last Name</label>
+                        <input type="text" [(ngModel)]="formData.lastName" name="lastName" [disabled]="isUpdating"
+                            class="figma-input">
+                    </div>
+                </div>
+                <div class="form-row-ws">
+                    <div class="form-field">
+                        <label>Age</label>
+                        <input type="number" [(ngModel)]="formData.age" name="age" [disabled]="isUpdating"
+                            class="figma-input">
+                    </div>
+                    <div class="form-field">
+                        <label>Gender</label>
+                        <select [(ngModel)]="formData.gender" name="gender" [disabled]="isUpdating" class="figma-input">
+                            <option value="MALE">Male</option>
+                            <option value="FEMALE">Female</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-figma btn-primary-figma" [disabled]="isUpdating">
+                    {{ isUpdating ? 'Saving State...' : 'Commit Changes' }}
+                </button>
+            </form>
+        </div>
+
+        <div class="settings-entry card-flat secure-section">
+            <h4>Password Security</h4>
+            <p class="settings-help">Ensure your terminal access remains secure by rotating credentials.</p>
+
+            <form (ngSubmit)="onChangePassword()" class="figma-form">
+                <div class="form-field">
+                    <label>Current Password</label>
+                    <input type="password" [(ngModel)]="passwordData.oldPassword" name="oldPassword"
+                        [disabled]="isChangingPassword" class="figma-input" placeholder="••••••••">
+                </div>
+                <div class="form-field">
+                    <label>New Password</label>
+                    <input type="password" [(ngModel)]="passwordData.newPassword" name="newPassword"
+                        [disabled]="isChangingPassword" class="figma-input" placeholder="At least 8 characters">
+                </div>
+                <button type="submit" class="btn-figma btn-primary-figma" [disabled]="isChangingPassword">
+                    {{ isChangingPassword ? 'UPDATING...' : 'Update Password' }}
+                </button>
+            </form>
+        </div>
+
+        <div class="settings-entry card-flat danger-zone-ws">
+            <h4 class="danger-title">Terminal Termination</h4>
+            <p class="danger-help">Permanent deletion of all workspace data and licensed access.</p>
+            <button (click)="onDeleteAccount()" class="btn-figma btn-outline-figma danger-btn" [disabled]="isDeleting">
+                {{ isDeleting ? 'Terminating...' : 'Terminate Account' }}
+            </button>
+        </div>
+    </div>
+</div>

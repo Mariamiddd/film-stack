@@ -6,328 +6,29 @@ import { PurchaseService } from '../../core/services/purchase.service';
 import { WishlistService } from '../../core/services/wishlist.service';
 import { FavoriteService } from '../../core/services/favorites.service';
 import { TmdbService, Movie } from '../../core/services/tmdb.service';
+import { ReportService } from '../../core/services/report.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { MovieCardComponent } from '../../shared/components/movie-card/movie-card.component';
+import { DatePipe } from '@angular/common';
+import { Title, Meta } from '@angular/platform-browser';
+
+import { ProfileHeaderComponent } from './components/profile-header/profile-header.component';
+import { ProfileSidebarComponent } from './components/profile-sidebar/profile-sidebar.component';
+import { AccountSettingsComponent } from './components/account-settings/account-settings.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [FormsModule, RouterLink, MovieCardComponent],
-  template: `
-    <div class="profile-container">
-      @if (authService.isAuthenticated()) {
-        <div class="profile-header-modern">
-          <div class="user-main">
-            <div class="avatar-large">
-              @if (user()?.avatar) {
-                <img [src]="user()!.avatar" [alt]="user()!.firstName" />
-              } @else {
-                <div class="placeholder">{{ getInitials() }}</div>
-              }
-            </div>
-            <div class="user-text">
-              <h1>{{ user()?.firstName }} {{ user()?.lastName }}</h1>
-              <p>{{ user()?.email }}</p>
-            </div>
-          </div>
-          <div class="header-actions">
-             <div class="quick-stats">
-                <div class="stat">
-                   <span class="val">{{ purchaseCount() }}</span>
-                   <span class="lab">Movies</span>
-                </div>
-                <div class="stat">
-                   <span class="val">{{ favoriteCount() }}</span>
-                   <span class="lab">Favorites</span>
-                </div>
-             </div>
-          </div>
-        </div>
-
-        <div class="profile-main-layout">
-          <!-- Sidebar Tabs (Left) -->
-          <aside class="profile-tabs-sidebar">
-            <button class="nav-tab-btn" [class.active]="activeTab() === 'purchases'" (click)="activeTab.set('purchases')">
-              <span class="icon">🎬</span> My Movies
-            </button>
-            <button class="nav-tab-btn" [class.active]="activeTab() === 'watchlist'" (click)="activeTab.set('watchlist')">
-              <span class="icon">🕒</span> Watchlist
-            </button>
-            <button class="nav-tab-btn" [class.active]="activeTab() === 'favorites'" (click)="activeTab.set('favorites')">
-              <span class="icon">⭐</span> Favorites
-            </button>
-            <button class="nav-tab-btn" [class.active]="activeTab() === 'downloads'" (click)="activeTab.set('downloads')">
-              <span class="icon">📥</span> Downloads
-            </button>
-            <div class="divider"></div>
-            <button class="nav-tab-btn" [class.active]="activeTab() === 'settings'" (click)="activeTab.set('settings')">
-              <span class="icon">⚙️</span> Settings
-            </button>
-          </aside>
-
-          <!-- Dynamic Content (Right) -->
-          <div class="profile-content-area">
-
-        <!-- Tab Content -->
-        <div class="tab-content">
-          <!-- Purchased Movies Tab -->
-          @if (activeTab() === 'purchases') {
-            <div class="movies-section">
-              <h2>My Purchased Movies</h2>
-              @if (purchases().length === 0) {
-                <div class="empty-state">
-                  <p>🎬 You haven't purchased any movies yet</p>
-                  <a routerLink="/" class="browse-btn">Browse Movies</a>
-                </div>
-              } @else {
-                <div class="movies-grid">
-                  @for (purchase of purchases(); track purchase.movieId) {
-                    <div class="movie-card-simple">
-                       <div class="movie-poster" [routerLink]="['/movie', purchase.movieId]">
-                          <div class="purchased-badge">✓ Owned</div>
-                          @if (purchase.posterPath) {
-                            <img [src]="getPosterUrl(purchase.posterPath)" [alt]="purchase.movieTitle">
-                          } @else {
-                            <div class="movie-placeholder">🎬</div>
-                          }
-                       </div>
-                      <div class="movie-info">
-                        <h3>{{ purchase.movieTitle }}</h3>
-                        <p class="purchase-date">Purchased {{ formatDate(purchase.purchaseDate) }}</p>
-                        <p class="purchase-price">\${{ purchase.price.toFixed(2) }}</p>
-                      </div>
-                    </div>
-                  }
-                </div>
-              }
-            </div>
-          }
-
-          <!-- Watchlist Tab -->
-          @if (activeTab() === 'watchlist') {
-            <div class="movies-section">
-              <h2>My Watchlist</h2>
-              @if (wishlistItems().length === 0) {
-                <div class="empty-state">
-                  <p>🕒 Your watchlist is empty</p>
-                  <a routerLink="/" class="browse-btn">Find Movies to Watch</a>
-                </div>
-              } @else {
-                <div class="movies-grid">
-                  @for (item of wishlistItems(); track item.movieId) {
-                    <app-movie-card [movie]="{id: item.movieId, title: item.movieTitle, poster_path: item.posterPath, vote_average: 0, overview: ''}"></app-movie-card>
-                  }
-                </div>
-              }
-            </div>
-          }
-
-          <!-- Favorites Tab -->
-          @if (activeTab() === 'favorites') {
-            <div class="movies-section">
-              <h2>My Favorite Movies</h2>
-              @if (favoriteItems().length === 0) {
-                <div class="empty-state">
-                  <p>⭐ No favorites added yet</p>
-                  <a routerLink="/" class="browse-btn">Explore Content</a>
-                </div>
-              } @else {
-                <div class="movies-grid">
-                  @for (item of favoriteItems(); track item.movieId) {
-                    <app-movie-card [movie]="{id: item.movieId, title: item.movieTitle, poster_path: item.posterPath, vote_average: 0, overview: ''}"></app-movie-card>
-                  }
-                </div>
-              }
-            </div>
-          }
-
-          <!-- Downloads Tab -->
-          @if (activeTab() === 'downloads') {
-            <div class="movies-section">
-              <h2>Offline Downloads</h2>
-              @if (purchases().length === 0) {
-                <div class="empty-state">
-                  <p>📥 You haven't downloaded any movies yet</p>
-                  <a routerLink="/" class="browse-btn">Explore Content to Download</a>
-                </div>
-              } @else {
-                <div class="movies-grid">
-                  @for (purchase of purchases(); track purchase.movieId) {
-                    <div class="movie-card-simple">
-                       <div class="movie-poster" [routerLink]="['/movie', purchase.movieId]">
-                          <div class="purchased-badge">📥 Available Offline</div>
-                          @if (purchase.posterPath) {
-                            <img [src]="getPosterUrl(purchase.posterPath)" [alt]="purchase.movieTitle">
-                          } @else {
-                            <div class="movie-placeholder">🎬</div>
-                          }
-                       </div>
-                      <div class="movie-info">
-                        <h3>{{ purchase.movieTitle }}</h3>
-                        <p class="purchase-date">Ready to watch without internet</p>
-                        <button 
-                          class="remove-btn" 
-                          style="margin-top: 12px; font-size: 0.8rem; padding: 6px 12px;"
-                          (click)="removePurchase(purchase.movieId)">
-                          Remove from Device
-                        </button>
-                      </div>
-                    </div>
-                  }
-                </div>
-              }
-            </div>
-          }
-
-          <!-- Settings Tab -->
-          @if (activeTab() === 'settings') {
-            <div class="settings-section">
-              <div class="settings-card">
-                <h2>Personal Information</h2>
-                
-                @if (successMessage()) {
-                  <div class="success-banner">{{ successMessage() }}</div>
-                }
-                
-                @if (errorMessage()) {
-                  <div class="error-banner">{{ errorMessage() }}</div>
-                }
-  
-                <form (ngSubmit)="updateProfile()" class="settings-form">
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label for="firstName">First Name</label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        [(ngModel)]="formData.firstName"
-                        name="firstName"
-                        [disabled]="isUpdating()"
-                      />
-                    </div>
-  
-                    <div class="form-group">
-                      <label for="lastName">Last Name</label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        [(ngModel)]="formData.lastName"
-                        name="lastName"
-                        [disabled]="isUpdating()"
-                      />
-                    </div>
-                  </div>
-  
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label for="age">Age</label>
-                      <input
-                        type="number"
-                        id="age"
-                        [(ngModel)]="formData.age"
-                        name="age"
-                        [disabled]="isUpdating()"
-                      />
-                    </div>
-  
-                    <div class="form-group">
-                      <label for="gender">Gender</label>
-                      <select
-                        id="gender"
-                        [(ngModel)]="formData.gender"
-                        name="gender"
-                        [disabled]="isUpdating()"
-                      >
-                        <option value="MALE">Male</option>
-                        <option value="FEMALE">Female</option>
-                        <option value="OTHER">Other</option>
-                      </select>
-                    </div>
-                  </div>
-  
-                  <button type="submit" class="submit-btn" [disabled]="isUpdating()">
-                    @if (isUpdating()) {
-                      <span class="spinner"></span>
-                      Updating...
-                    } @else {
-                      Update Profile
-                    }
-                  </button>
-                </form>
-              </div>
-  
-              <div class="settings-card">
-                <h2>Change Password</h2>
-                
-                <form (ngSubmit)="changePassword()" class="settings-form">
-                  <div class="form-group">
-                    <label for="oldPassword">Current Password</label>
-                    <input
-                      type="password"
-                      id="oldPassword"
-                      [(ngModel)]="passwordData.oldPassword"
-                      name="oldPassword"
-                      [disabled]="isChangingPassword()"
-                    />
-                  </div>
-  
-                  <div class="form-group">
-                    <label for="newPassword">New Password</label>
-                    <input
-                      type="password"
-                      id="newPassword"
-                      [(ngModel)]="passwordData.newPassword"
-                      name="newPassword"
-                      minlength="8"
-                      [disabled]="isChangingPassword()"
-                    />
-                    <small>Minimum 8 characters</small>
-                  </div>
-  
-                  <button type="submit" class="submit-btn" [disabled]="isChangingPassword()">
-                    @if (isChangingPassword()) {
-                      <span class="spinner"></span>
-                      Changing...
-                    } @else {
-                      Change Password
-                    }
-                  </button>
-                </form>
-              </div>
-  
-              <div class="settings-card danger-zone">
-                <h2>Danger Zone</h2>
-                <p>Once you delete your account, there is no going back. Please be certain.</p>
-                
-                <button (click)="confirmDelete()" class="delete-btn" [disabled]="isDeleting()">
-                  @if (isDeleting()) {
-                    <span class="spinner"></span>
-                    Deleting...
-                  } @else {
-                    Delete Account
-                  }
-                </button>
-              </div>
-            </div>
-          }
-        </div> <!-- end tab-content -->
-      </div> <!-- end profile-content-area -->
-    </div> <!-- end profile-main-layout -->
-    } @else {
-      <!-- Unauthenticated State -->
-      <div class="auth-prompt-container">
-        <div class="auth-prompt-content">
-          <div class="auth-icon">🔐</div>
-          <h1>Unlock Your Personal Cinema</h1>
-          <p>Sign in to access your movie collection, watchlist, and personalized recommendations.</p>
-          <div class="auth-actions">
-            <a routerLink="/auth/sign-in" class="primary-auth-btn">Sign In</a>
-            <a routerLink="/auth/sign-up" class="secondary-auth-btn">Create Account</a>
-          </div>
-        </div>
-      </div>
-    }
-  </div>
-  `,
+  imports: [
+    FormsModule,
+    RouterLink,
+    MovieCardComponent,
+    DatePipe,
+    ProfileHeaderComponent,
+    ProfileSidebarComponent,
+    AccountSettingsComponent
+  ],
+  templateUrl: './profile.component.html',
   styleUrls: ['./auth.css', './profile.component.css']
 })
 export class ProfileComponent {
@@ -338,9 +39,13 @@ export class ProfileComponent {
   private readonly purchaseService = inject(PurchaseService);
   private readonly wishlistService = inject(WishlistService);
   private readonly favoriteService = inject(FavoriteService);
+  private readonly reportService = inject(ReportService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly titleService = inject(Title);
+  private readonly metaService = inject(Meta);
 
   user = this.authService.currentUser;
-  activeTab = signal<'purchases' | 'watchlist' | 'favorites' | 'downloads' | 'settings'>('purchases');
+  activeTab = signal<'purchases' | 'watchlist' | 'favorites' | 'settings' | 'messages'>('purchases');
 
   purchases = computed(() => this.purchaseService.getPurchases());
   wishlistItems = computed(() => this.wishlistService.getWishlist());
@@ -349,6 +54,13 @@ export class ProfileComponent {
   purchaseCount = computed(() => this.purchases().length);
   wishlistCount = computed(() => this.wishlistItems().length);
   favoriteCount = computed(() => this.favoriteItems().length);
+
+  myReports = computed(() => this.reportService.reports().filter(r => r.userId === this.user()?.id));
+  unreadMessages = computed(() => this.reportService.messages().filter(m => m.receiverId === this.user()?.id && !m.read).length);
+
+  selectedPurchase = signal<any | null>(null);
+  reportForm = { reason: 'Movie isn\'t playing', details: '' };
+  chatInputs: Record<string, string> = {};
 
   formData: Partial<User> = {};
   passwordData = {
@@ -363,10 +75,13 @@ export class ProfileComponent {
   errorMessage = signal<string | null>(null);
 
   ngOnInit() {
+    this.titleService.setTitle('My Profile | Movieland');
+    this.metaService.updateTag({ name: 'description', content: 'Manage your library, watchlist, and account settings.' });
+
     // Listen for tab changes via query params
     this.route.queryParams.subscribe(params => {
       const tab = params['tab'];
-      if (tab && ['purchases', 'watchlist', 'favorites', 'downloads', 'settings'].includes(tab)) {
+      if (tab && ['purchases', 'watchlist', 'favorites', 'settings', 'messages'].includes(tab)) {
         this.activeTab.set(tab as any);
       }
     });
@@ -377,8 +92,9 @@ export class ProfileComponent {
       this.formData = { ...currentUser };
     }
 
-    // Always attempt to recover posters if we have any
+    // Always attempt to recover posters and ratings if we have any
     this.recoverMissingPosters();
+    this.recoverMissingRatings();
   }
 
   private recoverMissingPosters() {
@@ -407,11 +123,35 @@ export class ProfileComponent {
     });
   }
 
-  getInitials(): string {
-    const user = this.user();
-    if (!user) return '?';
-    return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
+  private recoverMissingRatings() {
+    this.wishlistItems().forEach(item => {
+      if (!item.rating || item.rating === 0) {
+        this.tmdbService.getMovieDetails(item.movieId.toString()).subscribe({
+          next: (m) => this.wishlistService.updateRating(item.movieId, m.vote_average),
+          error: () => {
+            this.tmdbService.getTvDetails(item.movieId.toString()).subscribe({
+              next: (tv) => this.wishlistService.updateRating(item.movieId, tv.vote_average)
+            });
+          }
+        });
+      }
+    });
+
+    this.favoriteItems().forEach(item => {
+      if (!item.rating || item.rating === 0) {
+        this.tmdbService.getMovieDetails(item.movieId.toString()).subscribe({
+          next: (m) => this.favoriteService.updateRating(item.movieId, m.vote_average),
+          error: () => {
+            this.tmdbService.getTvDetails(item.movieId.toString()).subscribe({
+              next: (tv) => this.favoriteService.updateRating(item.movieId, tv.vote_average)
+            });
+          }
+        });
+      }
+    });
   }
+
+
 
   getPosterUrl(path: string | null): string {
     return this.tmdbService.getPosterUrl(path);
@@ -495,9 +235,45 @@ export class ProfileComponent {
     }
   }
 
-  removePurchase(movieId: number) {
-    if (confirm('Are you sure you want to remove this movie from your device?')) {
-      this.purchaseService.removePurchase(movieId);
-    }
+  openReportModal(purchase: any) {
+    this.selectedPurchase.set(purchase);
+    this.reportForm = { reason: 'Movie isn\'t playing', details: '' };
+  }
+
+  submitReport() {
+    const user = this.user();
+    const purchase = this.selectedPurchase();
+    if (!user || !purchase) return;
+
+    this.reportService.submitReport({
+      userId: user.id,
+      userEmail: user.email,
+      userName: `${user.firstName} ${user.lastName}`,
+      movieId: purchase.movieId,
+      movieTitle: purchase.movieTitle,
+      reason: this.reportForm.reason,
+      details: this.reportForm.details
+    });
+
+    this.notificationService.show('Report submitted successfully. We will review it shortly.', 'success');
+    this.selectedPurchase.set(null);
+  }
+
+  getMessages(reportId: string) {
+    return this.reportService.messages().filter(m => m.reportId === reportId);
+  }
+
+  sendReply(report: any) {
+    const msg = this.chatInputs[report.id];
+    if (!msg) return;
+
+    this.reportService.sendMessage({
+      senderId: this.user()?.id || 'unknown',
+      receiverId: 'admin',
+      reportId: report.id,
+      message: msg
+    });
+
+    this.chatInputs[report.id] = '';
   }
 }

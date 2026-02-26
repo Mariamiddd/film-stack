@@ -1,0 +1,53 @@
+<div class="sidebar-overlay" [class.open]="layout.isSidebarOpen()" (click)="layout.closeSidebar()"></div>
+<aside class="sidebar" [class.open]="layout.isSidebarOpen()">
+    <div class="sidebar-header">
+        <a routerLink="/" class="logo" (click)="resetSearch()">
+            <span class="logo-text">MOVIE<span>LAND</span></span>
+        </a>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-group">
+            <p class="group-title">Tape Deck</p>
+            <a routerLink="/" (click)="resetSearch()" routerLinkActive="active"
+                [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+                <span class="vcr-icon">▶</span> PLAY
+            </a>
+            <a routerLink="/movies" routerLinkActive="active" class="nav-item">
+                <span class="vcr-icon">⏩</span> MOVIES
+            </a>
+            <a routerLink="/tv-shows" routerLinkActive="active" class="nav-item">
+                <span class="vcr-icon">📺</span> SERIES
+            </a>
+        </div>
+
+        @if (authService.isAuthenticated()) {
+        <div class="nav-group">
+            <p class="group-title">Personal Stash</p>
+            <a routerLink="/auth/profile" [queryParams]="{tab: 'purchases'}" routerLinkActive="active" class="nav-item">
+                MY TAPES
+            </a>
+            <a routerLink="/auth/profile" [queryParams]="{tab: 'watchlist'}" routerLinkActive="active" class="nav-item">
+                WATCHLIST
+            </a>
+            <a routerLink="/auth/profile" [queryParams]="{tab: 'favorites'}" routerLinkActive="active" class="nav-item">
+                FAVORITES
+            </a>
+        </div>
+
+        <div class="nav-group footer-group">
+            <a routerLink="/auth/profile" [queryParams]="{tab: 'settings'}" class="nav-item eject-btn">
+                <span class="vcr-icon">⏏</span> EJECT / LOGOUT
+            </a>
+        </div>
+
+        } @else {
+        <div class="nav-group auth-prompt">
+            <p class="group-title">Account</p>
+            <a routerLink="/auth/sign-in" class="nav-item login-prompt">
+                INSERT TAPE (SIGN IN)
+            </a>
+        </div>
+        }
+    </nav>
+</aside>

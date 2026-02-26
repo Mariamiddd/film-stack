@@ -1,5 +1,5 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, computed, OnInit, input, effect } from '@angular/core';
+import { DatePipe, UpperCasePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { TmdbService, Movie, Cast } from '../../core/services/tmdb.service';
@@ -8,18 +8,21 @@ import { PurchaseService } from '../../core/services/purchase.service';
 import { WishlistService } from '../../core/services/wishlist.service';
 import { FavoriteService } from '../../core/services/favorites.service';
 import { NotificationService } from '../../core/services/notification.service';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl, Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-movie-details',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [DatePipe, UpperCasePipe, DecimalPipe],
   templateUrl: './movie-details.component.html',
   styleUrls: ['./movie-details.component.css']
 })
 export class MovieDetailsComponent implements OnInit {
+  // Signal Inputs (Bound via Router)
+  id = input.required<string>();
+  type = input<'movie' | 'tv'>('movie');
+
   // Dependencies using inject()
-  private readonly route = inject(ActivatedRoute);
   private readonly tmdbService = inject(TmdbService);
   private readonly location = inject(Location);
   private readonly sanitizer = inject(DomSanitizer);
@@ -28,6 +31,8 @@ export class MovieDetailsComponent implements OnInit {
   private readonly favoriteService = inject(FavoriteService);
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
+  private readonly titleService = inject(Title);
+  private readonly metaService = inject(Meta);
   readonly authService = inject(AuthService);
 
   // State using Signals
@@ -39,6 +44,13 @@ export class MovieDetailsComponent implements OnInit {
   isPurchasing = signal(false);
   showTrailer = signal(false);
   trailerKey = signal<string | null>(null);
+
+  constructor() {
+    // Automatically reload data when inputs change
+    effect(() => {
+      this.loadData(this.id(), this.type());
+    });
+  }
 
   // Computed state
   isInWishlist = computed(() => {
@@ -57,12 +69,10 @@ export class MovieDetailsComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.loadData();
+    // Meta updates handled in effect or directly here
   }
 
-  private loadData() {
-    const id = this.route.snapshot.paramMap.get('id')!;
-    const type = this.route.snapshot.data['type'] || 'movie';
+  private loadData(id: string, type: 'movie' | 'tv') {
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
@@ -75,6 +85,10 @@ export class MovieDetailsComponent implements OnInit {
       next: (data) => {
         this.movie.set(data);
         if (data) {
+          const title = data.title || data.name || 'Details';
+          this.titleService.setTitle(`${title} | Movieland`);
+          this.metaService.updateTag({ name: 'description', content: data.overview || `View details for ${title}` });
+
           this.loadTrailer(data.id, type);
           this.loadCredits(data.id, type);
         }
@@ -102,8 +116,8 @@ export class MovieDetailsComponent implements OnInit {
     return path ? `https://image.tmdb.org/t/p/w185${path}` : 'https://via.placeholder.com/185x278.png?text=No+Photo';
   }
 
-  getBackdropUrl(path: string | null): string {
-    const p = this.movie()?.backdrop_path || path;
+  getBackdropUrl(path: string | null | undefined): string {
+    const p = path || this.movie()?.backdrop_path;
     return p ? `https://image.tmdb.org/t/p/original${p}` : '';
   }
 
@@ -149,7 +163,7 @@ export class MovieDetailsComponent implements OnInit {
     if (this.isInWishlist()) {
       this.wishlistService.removeFromWishlist(m.id);
     } else {
-      this.wishlistService.addToWishlist(m.id, m.title || m.name || 'Unknown', m.poster_path);
+      this.wishlistService.addToWishlist(m.id, m.title || m.name || 'Unknown', m.poster_path, m.vote_average);
     }
   }
 
@@ -160,7 +174,7 @@ export class MovieDetailsComponent implements OnInit {
     if (this.isInFavorites()) {
       this.favoriteService.removeFromFavorites(m.id);
     } else {
-      this.favoriteService.addToFavorites(m.id, m.title || m.name || 'Unknown', m.poster_path);
+      this.favoriteService.addToFavorites(m.id, m.title || m.name || 'Unknown', m.poster_path, m.vote_average);
     }
   }
 

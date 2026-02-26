@@ -11,13 +11,15 @@ export interface Movie {
   media_type?: 'movie' | 'tv';
   poster_path: string | null;
   backdrop_path?: string | null;
-  overview: string;
+  overview?: string;
   release_date?: string;
   first_air_date?: string;
   vote_average: number;
+  popularity?: number;
   original_language?: string;
   runtime?: number;
   genres?: Genre[];
+  genre_ids?: number[];
   tagline?: string;
 }
 
@@ -32,6 +34,7 @@ export interface FilterOptions {
   sortBy?: string;
   minRating?: string;
   language?: string;
+  minVoteCount?: string;
 }
 
 export interface VideoResult {
@@ -121,8 +124,8 @@ export class TmdbService {
 
   // ── Data endpoints ──
 
-  getTrending(): Observable<Movie[]> {
-    return this.fetch<TmdbResponse>('/trending/all/week').pipe(
+  getTrending(page: number = 1): Observable<Movie[]> {
+    return this.fetch<TmdbResponse>('/trending/all/week', { page: page.toString() }).pipe(
       map(res => res.results ?? [])
     );
   }
@@ -133,8 +136,9 @@ export class TmdbService {
     );
   }
 
-  getMovies(options: FilterOptions): Observable<Movie[]> {
+  getMovies(options: FilterOptions, page: number = 1): Observable<Movie[]> {
     const params = this.buildDiscoverParams(options);
+    params['page'] = page.toString();
     if (options.year) params['primary_release_year'] = options.year;
 
     return this.fetch<TmdbResponse>('/discover/movie', params).pipe(
@@ -142,8 +146,9 @@ export class TmdbService {
     );
   }
 
-  getTvShows(options: FilterOptions): Observable<Movie[]> {
+  getTvShows(options: FilterOptions, page: number = 1): Observable<Movie[]> {
     const params = this.buildDiscoverParams(options);
+    params['page'] = page.toString();
     if (options.year) params['first_air_date_year'] = options.year;
 
     return this.fetch<TmdbResponse>('/discover/tv', params).pipe(
@@ -151,9 +156,26 @@ export class TmdbService {
     );
   }
 
-  searchMovies(query: string): Observable<Movie[]> {
-    return this.fetch<TmdbResponse>('/search/movie', { query }).pipe(
-      map(res => res.results ?? [])
+  searchMovies(query: string, page: number = 1): Observable<Movie[]> {
+    return this.fetch<TmdbResponse>('/search/movie', { query, page: page.toString() }).pipe(
+      map(res => (res.results ?? []).sort((a, b) => (b.popularity || 0) - (a.popularity || 0)))
+    );
+  }
+
+  multiSearch(query: string, page: number = 1): Observable<Movie[]> {
+    return this.fetch<TmdbResponse>('/search/multi', { query, page: page.toString() }).pipe(
+      map(res => {
+        const results = res.results ?? [];
+        // Sort by popularity and filter out items without posters or those that are not movie/tv
+        // We also filter out extremely obscure results (low vote count + low popularity)
+        return results
+          .filter(item =>
+            (item.media_type === 'movie' || item.media_type === 'tv') &&
+            !!item.poster_path &&
+            (item.vote_average > 0 || (item.popularity ?? 0) > 10)
+          )
+          .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+      })
     );
   }
 
@@ -208,6 +230,8 @@ export class TmdbService {
   private buildDiscoverParams(options: FilterOptions): Record<string, string> {
     const params: Record<string, string> = {
       sort_by: options.sortBy || 'popularity.desc',
+      'vote_count.gte': options.minVoteCount || '100', // Default or custom threshold
+      'include_adult': 'false',
       page: '1',
     };
     if (options.genreId) params['with_genres'] = options.genreId;

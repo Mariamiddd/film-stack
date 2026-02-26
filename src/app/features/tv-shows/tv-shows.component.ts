@@ -1,77 +1,21 @@
 import { Component, inject, computed, signal, OnInit, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { TmdbService, Movie, Genre, FilterOptions } from '../../core/services/tmdb.service';
 import { MovieCardComponent } from '../../shared/components/movie-card/movie-card.component';
+import { Title, Meta } from '@angular/platform-browser';
+import { forkJoin, map } from 'rxjs';
 
 @Component({
   selector: 'app-tv-shows',
   standalone: true,
-  imports: [CommonModule, MovieCardComponent],
-  template: `
-    <div class="home-container">
-      <div class="hero-section">
-        <h1>Popular TV Shows</h1>
-        <div class="filter-controls">
-          <div class="filter-row">
-            <select class="filter-select" [value]="filters().genreId" (change)="updateFilter('genreId', $any($event.target).value)">
-              <option value="">All Genres</option>
-              @for (genre of genres(); track genre.id) {
-                <option [value]="genre.id.toString()">{{ genre.name }}</option>
-              }
-            </select>
-
-            <select class="filter-select" [value]="filters().year" (change)="updateFilter('year', $any($event.target).value)">
-              <option value="">All Years</option>
-              @for (year of years; track year) {
-                <option [value]="year">{{ year }}</option>
-              }
-            </select>
-
-            <select class="filter-select" [value]="filters().minRating" (change)="updateFilter('minRating', $any($event.target).value)">
-              <option value="">All Ratings</option>
-              <option value="9">9+ Stars</option>
-              <option value="8">8+ Stars</option>
-              <option value="7">7+ Stars</option>
-              <option value="6">6+ Stars</option>
-            </select>
-            
-            <select class="filter-select" [value]="filters().language" (change)="updateFilter('language', $any($event.target).value)">
-              <option value="">All Languages</option>
-              @for (lang of languages; track lang.code) {
-                <option [value]="lang.code">{{ lang.name }}</option>
-              }
-            </select>
-
-            <select class="filter-select" [value]="filters().sortBy" (change)="updateFilter('sortBy', $any($event.target).value)">
-              <option value="popularity.desc">Most Popular</option>
-              <option value="vote_average.desc">Top Rated</option>
-              <option value="primary_release_date.desc">Newest</option>
-              <option value="revenue.desc">Highest Grossing</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      @if (isLoading()) {
-        <div class="loading">Loading TV shows...</div>
-      }
-
-      @if (errorMessage()) {
-        <div class="error">{{ errorMessage() }}</div>
-      }
-
-      <div class="movies-grid">
-        @for (movie of movies(); track movie.id) {
-          <app-movie-card [movie]="movie" type="tv"></app-movie-card>
-        }
-      </div>
-    </div>
-  `,
-  styleUrls: ['../home/home.component.css']
+  imports: [MovieCardComponent],
+  templateUrl: './tv-shows.component.html',
+  styleUrl: './tv-shows.component.css'
 })
 export class TvShowsComponent implements OnInit {
   // Dependencies using inject()
   private tmdbService = inject(TmdbService);
+  private titleService = inject(Title);
+  private metaService = inject(Meta);
 
   // State using Signals
   movies = signal<Movie[]>([]);
@@ -85,7 +29,9 @@ export class TvShowsComponent implements OnInit {
   });
 
   isLoading = signal(false);
+  isLoadingMore = signal(false);
   errorMessage = signal<string | null>(null);
+  currentPage = signal(1);
 
   // Static data
   years = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i);
@@ -100,11 +46,14 @@ export class TvShowsComponent implements OnInit {
   constructor() {
     // React to filter changes
     effect(() => {
-      this.loadTvShows(this.filters());
+      this.currentPage.set(1);
+      this.loadTvShows(this.filters(), 1, false);
     });
   }
 
   ngOnInit() {
+    this.titleService.setTitle('Episodic Masterpieces | Movieland');
+    this.metaService.updateTag({ name: 'description', content: 'Explore the best TV shows from around the globe. Filter by genre, year, and rating.' });
     this.loadGenres();
   }
 
@@ -114,21 +63,45 @@ export class TvShowsComponent implements OnInit {
     });
   }
 
-  private loadTvShows(options: FilterOptions) {
-    this.isLoading.set(true);
+  private loadTvShows(options: FilterOptions, startPage: number = 1, append: boolean = false) {
+    if (append) {
+      this.isLoadingMore.set(true);
+    } else {
+      this.isLoading.set(true);
+    }
     this.errorMessage.set(null);
 
-    this.tmdbService.getTvShows(options).subscribe({
+    // Fetch 3 pages to get 60 items (Multiple of 6 columns)
+    const requests = [
+      this.tmdbService.getTvShows(options, startPage),
+      this.tmdbService.getTvShows(options, startPage + 1),
+      this.tmdbService.getTvShows(options, startPage + 2)
+    ];
+
+    forkJoin(requests).pipe(
+      map(results => results.flat())
+    ).subscribe({
       next: (data) => {
-        // Signal Update using .set()
-        this.movies.set(data);
+        if (append) {
+          this.movies.update(prev => [...prev, ...data]);
+        } else {
+          this.movies.set(data);
+        }
         this.isLoading.set(false);
+        this.isLoadingMore.set(false);
       },
       error: () => {
         this.errorMessage.set('Failed to load TV shows. Please try again.');
         this.isLoading.set(false);
+        this.isLoadingMore.set(false);
       }
     });
+  }
+
+  loadMore() {
+    // Increment by 3 pages (60 items)
+    this.currentPage.update(p => p + 3);
+    this.loadTvShows(this.filters(), this.currentPage(), true);
   }
 
   updateFilter(key: keyof FilterOptions, value: string) {

@@ -1,7 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-recovery',
@@ -59,13 +60,20 @@ import { AuthService } from '../../core/services/auth.service';
   `,
   styleUrls: ['./auth.css']
 })
-export class RecoveryComponent {
+export class RecoveryComponent implements OnInit {
   private authService = inject(AuthService);
+  private titleService = inject(Title);
+  private metaService = inject(Meta);
 
   email = '';
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
+
+  ngOnInit() {
+    this.titleService.setTitle('Reset Password | Movieland');
+    this.metaService.updateTag({ name: 'description', content: 'Recover your Movieland account access.' });
+  }
 
   onSubmit() {
     if (!this.email) {

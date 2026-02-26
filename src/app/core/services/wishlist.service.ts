@@ -6,6 +6,7 @@ export interface WishlistItem {
     movieId: number;
     movieTitle: string;
     posterPath: string | null;
+    rating: number;
     addedDate: Date;
 }
 
@@ -67,7 +68,7 @@ export class WishlistService {
 
     private readonly notificationService = inject(NotificationService);
 
-    addToWishlist(movieId: number, movieTitle: string, posterPath: string | null): boolean {
+    addToWishlist(movieId: number, movieTitle: string, posterPath: string | null, rating: number = 0): boolean {
         if (this.isInWishlist(movieId)) {
             return false;
         }
@@ -76,6 +77,7 @@ export class WishlistService {
             movieId,
             movieTitle,
             posterPath,
+            rating,
             addedDate: new Date()
         };
 
@@ -94,6 +96,13 @@ export class WishlistService {
 
     removeFromWishlist(movieId: number): void {
         this.wishlist.update(w => w.filter(item => item.movieId !== movieId));
+        this.saveWishlist();
+    }
+
+    updateRating(movieId: number, rating: number): void {
+        this.wishlist.update(w => w.map(item =>
+            item.movieId === movieId ? { ...item, rating } : item
+        ));
         this.saveWishlist();
     }
 

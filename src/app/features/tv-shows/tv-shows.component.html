@@ -1,0 +1,87 @@
+<div class="workspace-layout grid-system">
+    <div class="workspace-main">
+        <header class="ws-header">
+            <div class="workspace-header-title">
+                <h1>Popular TV Shows</h1>
+                <p>Episodic masterpieces from around the globe</p>
+            </div>
+
+            <div class="ws-controls">
+                <div class="filter-row-figma">
+                    <select class="figma-select" [value]="filters().genreId"
+                        (change)="updateFilter('genreId', $any($event.target).value)">
+                        <option value="">All Genres</option>
+                        @for (genre of genres(); track genre.id) {
+                        <option [value]="genre.id.toString()">{{ genre.name }}</option>
+                        }
+                    </select>
+
+                    <select class="figma-select" [value]="filters().year"
+                        (change)="updateFilter('year', $any($event.target).value)">
+                        <option value="">All Years</option>
+                        @for (year of years; track year) {
+                        <option [value]="year">{{ year }}</option>
+                        }
+                    </select>
+
+                    <select class="figma-select" [value]="filters().minRating"
+                        (change)="updateFilter('minRating', $any($event.target).value)">
+                        <option value="">All Ratings</option>
+                        <option value="9">9+ Stars</option>
+                        <option value="8">8+ Stars</option>
+                        <option value="7">7+ Stars</option>
+                        <option value="6">6+ Stars</option>
+                    </select>
+
+                    <select class="figma-select" [value]="filters().language"
+                        (change)="updateFilter('language', $any($event.target).value)">
+                        <option value="">All Languages</option>
+                        @for (lang of languages; track lang.code) {
+                        <option [value]="lang.code">{{ lang.name }}</option>
+                        }
+                    </select>
+
+                    <select class="figma-select" [value]="filters().sortBy"
+                        (change)="updateFilter('sortBy', $any($event.target).value)">
+                        <option value="popularity.desc">Most Popular</option>
+                        <option value="vote_average.desc">Top Rated</option>
+                        <option value="primary_release_date.desc">Newest</option>
+                        <option value="revenue.desc">Highest Grossing</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        @if (isLoading()) {
+        <div class="loading-state-minimal">
+            <div class="spinner-minimal"></div>
+            <p>Scanning Network...</p>
+        </div>
+        }
+
+        @if (errorMessage()) {
+        <div class="error-container-figma card-flat">
+            <p>{{ errorMessage() }}</p>
+        </div>
+        }
+
+        <div class="ws-grid-inner">
+            @for (movie of movies(); track movie.id) {
+            <app-movie-card [movie]="movie" type="tv"></app-movie-card>
+            }
+        </div>
+
+        @if (movies().length > 0) {
+        <div class="load-more-container">
+            <button class="btn-figma btn-outline-figma load-more-btn" [disabled]="isLoadingMore()" (click)="loadMore()">
+                @if (isLoadingMore()) {
+                <div class="spinner-tiny"></div>
+                CALIBRATING...
+                } @else {
+                LOAD MORE SERIES
+                }
+            </button>
+        </div>
+        }
+    </div>
+</div>

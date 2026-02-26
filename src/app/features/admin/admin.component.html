@@ -1,0 +1,180 @@
+<div class="projection-room-layout">
+    <!-- Archival Sidebar -->
+    <aside class="archival-sidebar">
+        <div class="sidebar-header">
+            <span class="analog-label">CONTROL UNIT</span>
+            <h2 class="sidebar-title">THE PROJECTION ROOM</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <button class="nav-item active">
+                <span class="vcr-icon">FILE_OPEN</span> MANAGE CATALOG
+            </button>
+            <button class="nav-item">
+                <span class="vcr-icon">TUNE</span> CURATE VIBES
+            </button>
+            <button class="nav-item">
+                <span class="vcr-icon">ANALYTICS</span> USER ANALYTICS
+            </button>
+            <button class="nav-item">
+                <span class="vcr-icon">REPORT</span> SYSTEM REPORTS
+            </button>
+            <button class="nav-item logout-nav-item" (click)="authService.signOut()">
+                <span class="vcr-icon">EJECT</span> LOGOUT
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <p class="archival-stamp">MOVIELAND ARCHIVE-2026</p>
+        </div>
+    </aside>
+
+    <!-- Main Projection Area -->
+    <main class="main-projection-area">
+        <header class="projection-header">
+            <div class="header-content">
+                <h1 class="ws-title">ADMINISTRATIVE DASHBOARD</h1>
+                <p class="ws-subtitle">Projectionist: {{ authService.currentUser()?.firstName }} {{
+                    authService.currentUser()?.lastName }}</p>
+            </div>
+
+            <div class="header-actions">
+                <button class="action-btn-retro">GENERATE REPORT</button>
+            </div>
+        </header>
+
+        <!-- High-Contrast Status Cards -->
+        <section class="status-grid">
+            <div class="status-card high-contrast red">
+                <span class="status-label">TOTAL REELS</span>
+                <span class="status-value">1,248</span>
+                <span class="status-change">+12 this week</span>
+            </div>
+            <div class="status-card high-contrast teal">
+                <span class="status-label">ACTIVE PROJECTIONS</span>
+                <span class="status-value">4.2K</span>
+                <span class="status-change">Live Viewers</span>
+            </div>
+            <div class="status-card high-contrast dark">
+                <span class="status-label">PENDING REVIEWS</span>
+                <span class="status-value">{{ pendingCount() }}</span>
+                <span class="status-change">Requires Attention</span>
+            </div>
+        </section>
+
+        <!-- Sleek Movie Entries Table -->
+        <section class="table-section archival-panel">
+            <div class="panel-header">
+                <h3 class="panel-title">CATALOG ENTRIES</h3>
+                <div class="panel-tools">
+                    <input type="text" placeholder="Search Archives..." class="archival-input">
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="archival-table">
+                    <thead>
+                        <tr>
+                            <th>REEL ID</th>
+                            <th>TITLE</th>
+                            <th>GENRE</th>
+                            <th>STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (movie of reports().slice(0, 5); track movie.id) {
+                        <tr>
+                            <td class="mono-id">#{{ movie.id.substring(0,6) }}</td>
+                            <td class="bold-title">{{ movie.movieTitle }}</td>
+                            <td>{{ movie.reason.split(' ')[0] }}</td>
+                            <td>
+                                <span class="status-pill" [class]="movie.status">{{ movie.status }}</span>
+                            </td>
+                            <td>
+                                <button class="icon-btn-retro" (click)="editMovie(movie)">EDIT</button>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Reports Section (Relocated) -->
+        <section class="archival-panel report-section">
+            <div class="panel-header">
+                <h3 class="panel-title">ACTIVE INCIDENTS</h3>
+                @if (pendingCount() > 0) {
+                <span class="analog-label blink">REQUIRES ACTION</span>
+                }
+            </div>
+
+            <div class="incidents-container">
+                <!-- List View -->
+                <div class="reports-mini-list">
+                    @for (report of reports(); track report.id) {
+                    <div class="mini-report-card" [class.selected]="selectedReportId() === report.id"
+                        [class.resolved]="report.status === 'resolved'" (click)="selectReport(report.id)">
+                        <div class="report-main">
+                            <span class="user-stamp">{{ report.userName }} · {{ report.status }}</span>
+                            <p class="report-desc">{{ report.movieTitle }} - {{ report.reason }}</p>
+                        </div>
+                        <div class="archival-v-bar"></div>
+                    </div>
+                    }
+                </div>
+
+                <!-- Detail/Resolution Pane -->
+                @if (selectedReport(); as report) {
+                <div class="resolution-pane archival-panel">
+                    <div class="pane-header">
+                        <h4>INCIDENT DETAIL: {{ report.id.substring(0,8) }}</h4>
+                        <span class="timestamp">{{ report.timestamp | date:'short' }}</span>
+                    </div>
+
+                    <div class="incident-content">
+                        <p class="incident-details"><strong>DETAILS:</strong> {{ report.details }}</p>
+                        <div class="divider-dashed"></div>
+
+                        @if (report.status === 'pending') {
+                        <div class="resolution-form">
+                            <label class="analog-label">OFFICIAL RESPONSE</label>
+                            <textarea [(ngModel)]="responses[report.id]" placeholder="Enter resolution details..."
+                                class="archival-textarea"></textarea>
+                            <div class="form-actions">
+                                <button class="action-btn-retro red" (click)="resolveReport(report)">TRANSMIT
+                                    RESOLUTION</button>
+                            </div>
+                        </div>
+                        } @else {
+                        <div class="resolution-archived">
+                            <p class="analog-label">RESOLUTION LOGGED</p>
+                            <p class="archived-response">{{ report.adminResponse }}</p>
+                        </div>
+                        }
+
+                        <!-- Chat Section -->
+                        <div class="chat-system">
+                            <h5>DIRECT COMM-LINK</h5>
+                            <div class="chat-logs">
+                                @for (msg of getMessages(report.id); track msg.id) {
+                                <div class="msg-bubble" [class.admin-msg]="msg.senderId === 'admin'">
+                                    <span class="msg-sender">{{ msg.senderId === 'admin' ? 'SYSTEM' : 'USER' }}</span>
+                                    <p>{{ msg.message }}</p>
+                                </div>
+                                }
+                            </div>
+                            <div class="chat-input-row">
+                                <input type="text" [(ngModel)]="chatInputs[report.id]" placeholder="Type message..."
+                                    (keyup.enter)="sendChat(report)" class="archival-input">
+                                <button (click)="sendChat(report)" class="icon-btn-retro teal">SEND</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </section>
+    </main>
+</div>

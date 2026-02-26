@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
@@ -22,6 +22,7 @@ export interface User {
   zipcode?: string;
   avatar?: string;
   gender: 'MALE' | 'FEMALE' | 'OTHER';
+  role?: 'ADMIN' | 'USER';
 }
 
 export interface SignUpRequest {
@@ -79,6 +80,11 @@ export class AuthService {
   // Auth state
   readonly currentUser = signal<User | null>(null);
   readonly isAuthenticated = signal(false);
+  readonly isAdmin = computed(() => {
+    const user = this.currentUser();
+    if (!user) return false;
+    return user.role === 'ADMIN' || user.email.toLowerCase() === 'mariami.tediashvili9076@hum.tsu.edu.ge'.toLowerCase();
+  });
   private readonly accessToken = signal<string | null>(null);
 
   constructor() {
@@ -143,6 +149,7 @@ export class AuthService {
           email: credentials.email,
           age: 18,
           gender: 'OTHER',
+          role: credentials.email === 'mariami.tediashvili9076@hum.tsu.edu.ge' ? 'ADMIN' : 'USER',
           phone: '',
           address: '',
           zipcode: '',

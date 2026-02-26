@@ -43,6 +43,13 @@ export class NotificationService {
         } else {
             this.loadInbox();
         }
+
+        // Add storage listener for cross-tab synchronization (important for mock admin notifications)
+        window.addEventListener('storage', (event) => {
+            if (event.key === this.storageKey) {
+                this.loadInbox();
+            }
+        });
     }
 
     initializeForUser(userId: string) {
@@ -86,6 +93,42 @@ export class NotificationService {
 
         // Also show a toast notification for immediate feedback
         this.show(`${title}: ${message}`, type === 'purchase' || type === 'favorite' ? 'success' : 'info');
+    }
+
+    /**
+     * Internal mock helper to add a notification to another user's inbox
+     * In a real app, this would be a backend push notification/socket event
+     */
+    addSystemNotificationForUser(userId: string, title: string, message: string) {
+        const key = `inbox_${userId}`;
+        const stored = localStorage.getItem(key);
+        let items: InboxItem[] = [];
+
+        if (stored) {
+            try {
+                items = JSON.parse(stored);
+            } catch (e) {
+                items = [];
+            }
+        }
+
+        const newItem: InboxItem = {
+            id: crypto.randomUUID(),
+            title,
+            message,
+            timestamp: new Date(),
+            read: false,
+            type: 'system'
+        };
+
+        items = [newItem, ...items];
+        localStorage.setItem(key, JSON.stringify(items));
+
+        // If the current user is the recipient, update the signal
+        if (this.currentUserId === userId) {
+            this.inboxSignal.set(items.map(i => ({ ...i, timestamp: new Date(i.timestamp) })));
+            this.show(`${title}: ${message}`, 'info');
+        }
     }
 
     markAsRead(id: string) {

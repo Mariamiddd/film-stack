@@ -1,0 +1,16 @@
+@if (notificationService.currentNotification(); as n) {
+<div class="notification-container" [class]="n.type">
+    <div class="message-content">
+        <span class="icon">{{ getIcon(n.type) }}</span>
+        <p>{{ n.message }}</p>
+    </div>
+    <div class="actions">
+        @if (n.action) {
+        <button class="action-btn" (click)="n.action.callback(); notificationService.clear()">
+            {{ n.action.label }}
+        </button>
+        }
+        <button class="close-btn" (click)="notificationService.clear()">✕</button>
+    </div>
+</div>
+}

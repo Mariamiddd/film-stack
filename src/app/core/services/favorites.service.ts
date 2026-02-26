@@ -6,6 +6,7 @@ export interface FavoriteItem {
     movieId: number;
     movieTitle: string;
     posterPath: string | null;
+    rating: number;
     addedDate: Date;
 }
 
@@ -67,7 +68,7 @@ export class FavoriteService {
 
     private readonly notificationService = inject(NotificationService);
 
-    addToFavorites(movieId: number, movieTitle: string, posterPath: string | null): boolean {
+    addToFavorites(movieId: number, movieTitle: string, posterPath: string | null, rating: number = 0): boolean {
         if (this.isInFavorites(movieId)) {
             return false;
         }
@@ -76,6 +77,7 @@ export class FavoriteService {
             movieId,
             movieTitle,
             posterPath,
+            rating,
             addedDate: new Date()
         };
 
@@ -94,6 +96,13 @@ export class FavoriteService {
 
     removeFromFavorites(movieId: number): void {
         this.favorites.update(f => f.filter(item => item.movieId !== movieId));
+        this.saveFavorites();
+    }
+
+    updateRating(movieId: number, rating: number): void {
+        this.favorites.update(f => f.map(item =>
+            item.movieId === movieId ? { ...item, rating } : item
+        ));
         this.saveFavorites();
     }
 
