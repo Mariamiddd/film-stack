@@ -8,7 +8,7 @@
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 100;
+    z-index: 2200;
     padding: 48px 24px;
     transition: all 0.3s ease;
     font-family: var(--font-mono);

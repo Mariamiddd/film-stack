@@ -11,11 +11,7 @@
 .workspace-header-title h1 {
     font-size: 1.5rem;
     font-weight: 700;
-}
-
-.workspace-header-title p {
-    font-size: 0.8rem;
-    color: var(--text-highlight);
+    color: var(--text-analog);
 }
 
 .ws-grid-inner {
@@ -45,27 +41,15 @@
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
-.figma-select {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-analog);
-    border-radius: var(--radius-analog);
-    color: var(--text-analog);
-    font-size: 0.75rem;
-    font-weight: 500;
-    padding: 6px 12px;
-    outline: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
+.ws-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.figma-select:hover,
-.figma-select:focus {
-    border-color: var(--primary-glow);
-    color: #fff;
-    background: rgba(255, 255, 255, 0.02);
-}
 
 /* Loading State */
 .loading-state-minimal {

@@ -2,12 +2,12 @@
     position: fixed;
     bottom: 24px;
     right: 24px;
-    z-index: 2000;
-    /* Higher than topbar and sidebar */
+    z-index: 99999;
     padding: 16px 24px;
     border-radius: var(--radius-analog);
     background: var(--bg-secondary);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     color: var(--text-analog);
     display: flex;

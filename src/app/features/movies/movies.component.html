@@ -3,51 +3,29 @@
         <header class="ws-header">
             <div class="workspace-header-title">
                 <h1>Popular Movies</h1>
-                <p>Browse our curated selection of cinema</p>
             </div>
 
             <div class="ws-controls">
                 <div class="filter-row-figma">
-                    <select class="figma-select" [value]="filters().genreId"
-                        (change)="updateFilter('genreId', $any($event.target).value)">
-                        <option value="">All Genres</option>
-                        @for (genre of genres(); track genre.id) {
-                        <option [value]="genre.id.toString()">{{ genre.name }}</option>
-                        }
-                    </select>
+                    <app-figma-select [options]="genreOptions()" [value]="filters().genreId"
+                        (valueChange)="updateFilter('genreId', $event)">
+                    </app-figma-select>
 
-                    <select class="figma-select" [value]="filters().year"
-                        (change)="updateFilter('year', $any($event.target).value)">
-                        <option value="">All Years</option>
-                        @for (year of years; track year) {
-                        <option [value]="year">{{ year }}</option>
-                        }
-                    </select>
+                    <app-figma-select [options]="yearOptions()" [value]="filters().year"
+                        (valueChange)="updateFilter('year', $event)">
+                    </app-figma-select>
 
-                    <select class="figma-select" [value]="filters().minRating"
-                        (change)="updateFilter('minRating', $any($event.target).value)">
-                        <option value="">All Ratings</option>
-                        <option value="9">9+ Stars</option>
-                        <option value="8">8+ Stars</option>
-                        <option value="7">7+ Stars</option>
-                        <option value="6">6+ Stars</option>
-                    </select>
+                    <app-figma-select [options]="ratingOptions" [value]="filters().minRating"
+                        (valueChange)="updateFilter('minRating', $event)">
+                    </app-figma-select>
 
-                    <select class="figma-select" [value]="filters().language"
-                        (change)="updateFilter('language', $any($event.target).value)">
-                        <option value="">All Languages</option>
-                        @for (lang of languages; track lang.code) {
-                        <option [value]="lang.code">{{ lang.name }}</option>
-                        }
-                    </select>
+                    <app-figma-select [options]="languageOptions()" [value]="filters().language"
+                        (valueChange)="updateFilter('language', $event)">
+                    </app-figma-select>
 
-                    <select class="figma-select" [value]="filters().sortBy"
-                        (change)="updateFilter('sortBy', $any($event.target).value)">
-                        <option value="popularity.desc">Most Popular</option>
-                        <option value="vote_average.desc">Top Rated</option>
-                        <option value="primary_release_date.desc">Newest</option>
-                        <option value="revenue.desc">Highest Grossing</option>
-                    </select>
+                    <app-figma-select [options]="sortOptions" [value]="filters().sortBy"
+                        (valueChange)="updateFilter('sortBy', $event)">
+                    </app-figma-select>
                 </div>
             </div>
         </header>

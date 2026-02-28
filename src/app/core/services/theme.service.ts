@@ -26,7 +26,7 @@ export const MOODS: Mood[] = [
 })
 export class ThemeService {
     // Dynamic glow color
-    activeColor = signal<string>('#43aa8b');
+    activeColor = signal<string>('#baf2bb');
 
     // Mood Slider state
     moodValue = signal<number>(50);

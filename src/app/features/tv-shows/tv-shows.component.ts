@@ -1,13 +1,14 @@
 import { Component, inject, computed, signal, OnInit, effect } from '@angular/core';
 import { TmdbService, Movie, Genre, FilterOptions } from '../../core/services/tmdb.service';
 import { MovieCardComponent } from '../../shared/components/movie-card/movie-card.component';
+import { FigmaSelectComponent, SelectOption } from '../../shared/components/figma-select/figma-select.component';
 import { Title, Meta } from '@angular/platform-browser';
 import { forkJoin, map } from 'rxjs';
 
 @Component({
   selector: 'app-tv-shows',
   standalone: true,
-  imports: [MovieCardComponent],
+  imports: [MovieCardComponent, FigmaSelectComponent],
   templateUrl: './tv-shows.component.html',
   styleUrl: './tv-shows.component.css'
 })
@@ -41,6 +42,37 @@ export class TvShowsComponent implements OnInit {
     { code: 'ja', name: 'Japanese' },
     { code: 'fr', name: 'French' },
     { code: 'es', name: 'Spanish' }
+  ];
+
+  // Computed Options for Custom Select
+  genreOptions = computed<SelectOption[]>(() => [
+    { label: 'All Genres', value: '' },
+    ...this.genres().map(g => ({ label: g.name, value: g.id.toString() }))
+  ]);
+
+  yearOptions = computed<SelectOption[]>(() => [
+    { label: 'All Years', value: '' },
+    ...this.years.map(y => ({ label: y.toString(), value: y.toString() }))
+  ]);
+
+  ratingOptions: SelectOption[] = [
+    { label: 'All Ratings', value: '' },
+    { label: '9+ Stars', value: '9' },
+    { label: '8+ Stars', value: '8' },
+    { label: '7+ Stars', value: '7' },
+    { label: '6+ Stars', value: '6' }
+  ];
+
+  languageOptions = computed<SelectOption[]>(() => [
+    { label: 'All Languages', value: '' },
+    ...this.languages.map(l => ({ label: l.name, value: l.code }))
+  ]);
+
+  sortOptions: SelectOption[] = [
+    { label: 'Most Popular', value: 'popularity.desc' },
+    { label: 'Top Rated', value: 'vote_average.desc' },
+    { label: 'Newest', value: 'primary_release_date.desc' },
+    { label: 'Highest Grossing', value: 'revenue.desc' }
   ];
 
   constructor() {

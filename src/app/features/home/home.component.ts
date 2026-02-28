@@ -59,26 +59,14 @@ export class HomeComponent implements OnInit {
 
 
   constructor() {
-    // React to featured movie changes
-    effect(() => {
-      const hero = this.featuredMovie();
-      if (hero) {
-        const title = hero.title || hero.name || '';
-        let hash = 0;
-        for (let i = 0; i < title.length; i++) {
-          hash = title.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        const h = Math.abs(hash % 360);
-        this.themeService.setActiveColor(`hsl(${h}, 60%, 50%)`);
-      }
-    });
+
 
     // React to mood or intensity changes
     effect(() => {
       const mood = this.currentMood();
       const level = this.intensity();
       // Update global glow based on mood color
-      this.themeService.setActiveColor(mood.color);
+      // this.themeService.setActiveColor(mood.color); // Removed to prevent background color changes on refresh
 
       this.currentPage.set(1);
       this.activeGenre.set(null); // Reset sub-filter on main mood change

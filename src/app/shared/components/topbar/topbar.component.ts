@@ -15,6 +15,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
   imports: [RouterLink, RouterLinkActive, FormsModule],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.css',
+  host: { 'style': 'display: block; position: relative; z-index: 2100;' }
 })
 export class TopbarComponent {
   readonly authService = inject(AuthService);

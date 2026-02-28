@@ -1,4 +1,5 @@
 .topbar {
+    position: sticky;
     top: 0;
     left: 0;
     width: 100%;
@@ -6,7 +7,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 10;
+    z-index: 2100;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -110,7 +111,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(10, 10, 10, 0.96);
+    background: rgba(10, 10, 10, 0.10);
     /* Solid dark void */
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -285,12 +286,6 @@
 }
 
 
-
-
-
-
-
-
 .user-actions {
     display: flex;
     align-items: center;
@@ -364,7 +359,7 @@
     right: -10px;
     width: 320px;
     max-height: 480px;
-    background: #1a1a1e;
+    background: var(--bg-main);
     border: 1px solid rgba(255, 255, 255, 0.15);
     z-index: 1100;
     display: flex;
@@ -436,7 +431,7 @@
     gap: 12px;
     cursor: pointer;
     transition: background 0.2s;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(36, 29, 29, 0.43);
     position: relative;
 }
 
@@ -467,6 +462,7 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+    color: var(--bg-main);
 }
 
 .item-meta {
@@ -490,6 +486,7 @@
     font-weight: 700;
     color: var(--text-highlight);
     margin: 0;
+
 }
 
 .item-message {

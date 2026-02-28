@@ -65,7 +65,7 @@ export class MovieCardComponent {
       color = this.generateColor(movie.title || movie.name || '');
     }
 
-    this.themeService.setActiveColor(color);
+    // this.themeService.setActiveColor(color); // Removed to prevent dynamic background color changes
   }
 
   private generateColor(str: string): string {
