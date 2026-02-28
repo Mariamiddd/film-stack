@@ -16,6 +16,9 @@ export class FigmaSelectComponent {
     options = input.required<SelectOption[]>();
     value = input<string | undefined>('');
     placeholder = input<string>('Select...');
+    title = input<string>('');
+    defaultValue = input<string>('');
+    alignRight = input<boolean>(false);
 
     valueChange = output<string>();
 
@@ -26,9 +29,6 @@ export class FigmaSelectComponent {
 
     // Update selectedLabel whenever value or options change
     constructor() {
-        // Note: In Angular 17+, we can use computed for this if we want it to be more elegant, 
-        // but a constructor effect or just updating on inputs is fine.
-        // Actually, let's use a computed for the label.
     }
 
     currentLabel = signal<string>('');

@@ -1,34 +1,39 @@
 <header class="topbar">
     <div class="topbar-left">
         <button class="menu-trigger" (click)="layout.toggleSidebar()" aria-label="Toggle Menu">
-            <span class="vcr-icon">MENU</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
         </button>
 
         <a routerLink="/" class="logo" (click)="closeAll()">
             <span class="logo-icon">
-                <img src="https://res.cloudinary.com/dehx2iulz/image/upload/v1772091322/film-reel_jva2jz.png"
+                <img src="https://res.cloudinary.com/dehx2iulz/image/upload/v1772285333/video-camera_2_jgydrg.png"
                     alt="Movieland Logo">
             </span>
             <span class="logo-text">MOVIE<span>LAND</span></span>
         </a>
-
-        <nav class="top-nav">
-            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
-                HOME
-            </a>
-            <a routerLink="/movies" routerLinkActive="active" class="nav-link">
-                MOVIES
-            </a>
-            <a routerLink="/tv-shows" routerLinkActive="active" class="nav-link">
-                SERIES
-            </a>
-            @if (authService.isAdmin()) {
-            <a routerLink="/admin" routerLinkActive="active" class="nav-link admin-link">
-                CONTROL
-            </a>
-            }
-        </nav>
     </div>
+
+    <nav class="top-nav">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+            HOME
+        </a>
+        <a routerLink="/movies" routerLinkActive="active" class="nav-link">
+            MOVIES
+        </a>
+        <a routerLink="/tv-shows" routerLinkActive="active" class="nav-link">
+            TV SHOWS
+        </a>
+        @if (authService.isAdmin()) {
+        <a routerLink="/admin" routerLinkActive="active" class="nav-link admin-link">
+            <span class="vcr-icon">⚙</span> CONTROL
+        </a>
+        }
+    </nav>
 
 
 
@@ -95,58 +100,105 @@
                 <div class="avatar-container" [routerLink]="['/auth/profile']" (click)="closeAll()">
                     <img [src]="authService.currentUser()?.avatar || 'assets/default-avatar.png'" alt="P">
                 </div>
-                <button class="logout-text-btn" (click)="authService.signOut(); closeAll()">LOGOUT</button>
+                <button class="Btn logout-btn" (click)="authService.signOut(); closeAll()">
+                    <div class="sign"><svg viewBox="0 0 512 512">
+                            <path
+                                d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z">
+                            </path>
+                        </svg></div>
+                    <div class="text" style="font-family: var(--font-mono); font-weight: 700;">SIGN OUT</div>
+                </button>
             </div>
             } @else {
-            <a routerLink="/auth/sign-in" class="sign-in-link">SIGN IN</a>
+            <a routerLink="/auth/sign-in" class="Btn login-btn" (click)="closeAll()">
+                <div class="sign">
+                    <svg viewBox="0 0 512 512">
+                        <path
+                            d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L32 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM352 416l64 0c17.7 0 32-14.3 32-32l0-256c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c53 0 96 43 96 96l0 256c0 53-43 96-96 96l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="text" style="font-family: var(--font-mono); font-weight: 700;">SIGN IN</div>
+            </a>
             }
         </div>
     </div>
 
-    <!-- Mobile Nav Overlay -->
-    @if (layout.isSidebarOpen()) {
-    <div class="mobile-nav-overlay" (click)="layout.closeSidebar()">
-        <nav class="mobile-nav" (click)="$event.stopPropagation()">
-            <div class="mobile-nav-header">
-                <span class="analog-label">MENU</span>
-                <button class="close-btn" (click)="layout.closeSidebar()">✕</button>
-            </div>
-            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="mobile-link"
-                (click)="closeAll()">
-                HOME
-            </a>
-            <a routerLink="/movies" routerLinkActive="active" class="mobile-link" (click)="closeAll()">
-                MOVIES
-            </a>
-            <a routerLink="/tv-shows" routerLinkActive="active" class="mobile-link" (click)="closeAll()">
-                SERIES
-            </a>
-            @if (authService.isAdmin()) {
-            <a routerLink="/admin" routerLinkActive="active" class="mobile-link admin-link" (click)="closeAll()">
-                ADMIN CONTROL
-            </a>
-            }
-            @if (authService.isAuthenticated()) {
-            <div class="mobile-divider"></div>
-            <a routerLink="/auth/profile" [queryParams]="{tab: 'watchlist'}" class="mobile-link"
-                (click)="closeAll()">WATCHLIST</a>
-            <a routerLink="/auth/profile" [queryParams]="{tab: 'favorites'}" class="mobile-link"
-                (click)="closeAll()">FAVORITES</a>
-            <div class="mobile-divider"></div>
-            <button class="mobile-link logout-btn" (click)="authService.signOut(); closeAll()">EJECT / LOGOUT</button>
-            } @else {
-            <div class="mobile-divider"></div>
-            <a routerLink="/auth/sign-in" class="mobile-link" (click)="closeAll()">SIGN IN</a>
-            }
-        </nav>
-    </div>
-    }
 </header>
 
+<!-- Mobile Nav Overlay -->
+@if (layout.isSidebarOpen()) {
+<div class="mobile-nav-overlay" (click)="layout.closeSidebar()">
+    <nav class="mobile-nav" (click)="$event.stopPropagation()">
+        <div class="mobile-nav-header">
+            <a routerLink="/" class="logo mobile-only-logo" (click)="closeAll()">
+                <span class="logo-icon">
+                    <img src="https://res.cloudinary.com/dehx2iulz/image/upload/v1772285333/video-camera_2_jgydrg.png"
+                        alt="Movieland Logo">
+                </span>
+                <span class="logo-text">MOVIE<span>LAND</span></span>
+            </a>
+            <button class="close-btn" (click)="layout.closeSidebar()">✕</button>
+        </div>
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="mobile-link"
+            (click)="closeAll()">
+            HOME
+        </a>
+        <a routerLink="/movies" routerLinkActive="active" class="mobile-link" (click)="closeAll()">
+            MOVIES
+        </a>
+        <a routerLink="/tv-shows" routerLinkActive="active" class="mobile-link" (click)="closeAll()">
+            TV SHOWS
+        </a>
+        @if (authService.isAdmin()) {
+        <a routerLink="/admin" routerLinkActive="active" class="mobile-link admin-link" (click)="closeAll()">
+            ADMIN CONTROL
+        </a>
+        }
+        @if (authService.isAuthenticated()) {
+        <div class="mobile-divider"></div>
+        <a routerLink="/auth/profile" [queryParams]="{tab: 'watchlist'}" class="mobile-link"
+            (click)="closeAll()">WATCHLIST</a>
+        <a routerLink="/auth/profile" [queryParams]="{tab: 'favorites'}" class="mobile-link"
+            (click)="closeAll()">FAVORITES</a>
+        <div class="mobile-btn-wrapper" style="margin-top: 16px; align-items: center; gap: 16px;">
+            <button class="Btn logout-btn" (click)="authService.signOut(); closeAll()">
+                <div class="sign"><svg viewBox="0 0 512 512">
+                        <path
+                            d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z">
+                        </path>
+                    </svg></div>
+            </button>
+            <a class="mobile-link" style="border: none; padding: 0; cursor: pointer;"
+                (click)="authService.signOut(); closeAll()">
+                SIGN OUT
+            </a>
+        </div>
+        } @else {
+        <div class="mobile-divider"></div>
+        <div class="mobile-btn-wrapper" style="margin-top: 16px; align-items: center; gap: 16px;">
+            <a routerLink="/auth/sign-in" class="Btn login-btn" (click)="closeAll()">
+                <div class="sign">
+                    <svg viewBox="0 0 512 512">
+                        <path
+                            d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L32 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM352 416l64 0c17.7 0 32-14.3 32-32l0-256c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c53 0 96 43 96 96l0 256c0 53-43 96-96 96l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z">
+                        </path>
+                    </svg>
+                </div>
+            </a>
+            <a routerLink="/auth/sign-in" class="mobile-link" style="border: none; padding: 0;" (click)="closeAll()">
+                SIGN IN
+            </a>
+        </div>
+        }
+    </nav>
+</div>
+}
+
 @if (isSearchOpen()) {
-<div class="search-overlay-cinematic">
-    <div class="search-floating-content" (click)="$event.stopPropagation()">
-        <div class="search-bar-air">
+<div class="search-overlay-cinematic" (click)="toggleSearch()">
+    <div class="search-floating-content">
+        <div class="search-bar-air" (click)="$event.stopPropagation()">
             <svg class="inner-search-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
@@ -159,7 +211,7 @@
         </div>
 
         @if (searchResults().length > 0) {
-        <div class="search-results-air card-flat">
+        <div class="search-results-air card-flat" (click)="$event.stopPropagation()">
             @for (item of searchResults().slice(0, 8); track item.id; let idx = $index) {
             <div class="search-item-air" [class.active]="idx === selectedIndex()" [routerLink]="getContentLink(item)"
                 (click)="closeAll()">
@@ -172,7 +224,7 @@
             }
         </div>
         } @else if (searchService.query().length > 0) {
-        <div class="search-results-air card-flat">
+        <div class="search-results-air card-flat" (click)="$event.stopPropagation()">
             <div class="no-results-air">
                 Exploring the cinematic archives for "{{ searchService.query() }}"...
             </div>

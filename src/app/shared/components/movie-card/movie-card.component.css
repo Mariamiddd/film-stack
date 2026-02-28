@@ -1,6 +1,6 @@
 .movie-card {
     position: relative;
-    background: #1a1a1e;
+    background-color: var(--primary-glow);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 4px;
     overflow: hidden;
@@ -8,13 +8,11 @@
     transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .movie-card:hover {
     border-color: var(--header-accent);
-    transform: translateY(-8px);
-    box-shadow: 0 15px 35px rgba(80, 50, 20, 0.2);
+    transform: translateY(-2px);
 }
 
 .poster-wrapper {
@@ -22,7 +20,9 @@
     width: 100%;
     aspect-ratio: 2/3;
     overflow: hidden;
-    background: #000;
+    background: var(--primary-glow);
+    padding: 6px;
+    color: var(--bg-secondary);
 }
 
 .poster-image {
@@ -33,17 +33,12 @@
 }
 
 .movie-card:hover .poster-image {
-    transform: scale(1.08);
+    transform: scale(1.02);
 }
 
-/* Glassmorphism Shadow Overlay */
+/* Poster Shadow (Removed) */
 .poster-wrapper::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.8));
-    z-index: 1;
-    pointer-events: none;
+    display: none;
 }
 
 
@@ -75,7 +70,7 @@
 
 .card-content {
     padding: 12px;
-    background: #1a1a1e;
+    background: var(--primary-glow);
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -89,7 +84,7 @@
     font-family: var(--font-sans);
     font-size: 0.9rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--bg-secondary);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -105,7 +100,8 @@
     align-items: center;
     gap: 10px;
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--bg-secondary);
+    opacity: 0.8;
     font-weight: 500;
 }
 
@@ -145,7 +141,7 @@
 
 .action-btn {
     width: 100%;
-    padding: 10px;
+    padding: 5px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
@@ -168,4 +164,78 @@
     background: var(--primary-glow);
     color: #000;
     border-color: var(--primary-glow);
+}
+
+.mobile-actions {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    gap: 8px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+    z-index: 15;
+}
+
+.mob-action-btn {
+    flex: 1;
+    padding: 6px 4px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 4px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.mob-action-btn.active {
+    background: var(--header-accent);
+    color: #fff;
+    border-color: var(--header-accent);
+}
+
+@media (max-width: 768px) {
+    .desktop-actions {
+        display: none !important;
+    }
+
+    .mobile-actions {
+        display: flex;
+    }
+
+    .poster-wrapper {
+        padding: 4px;
+    }
+
+    .card-content {
+        padding: 8px;
+        min-height: 50px;
+        gap: 4px;
+    }
+
+    .movie-title {
+        font-size: 0.8rem;
+        height: 2.6em;
+    }
+
+    .card-meta {
+        font-size: 0.65rem;
+    }
+
+    .card-rating {
+        top: 8px;
+        right: 8px;
+        padding: 2px 6px;
+        font-size: 0.55rem;
+    }
 }

@@ -7,34 +7,35 @@
 
             <div class="ws-controls">
                 <div class="filter-row-figma">
-                    <app-figma-select [options]="genreOptions()" [value]="filters().genreId"
-                        (valueChange)="updateFilter('genreId', $event)">
-                    </app-figma-select>
+                    <div class="filter-group-left">
+                        <app-figma-select title="Sort" [options]="sortOptions" [value]="filters().sortBy"
+                            defaultValue="popularity.desc" (valueChange)="updateFilter('sortBy', $event)">
+                        </app-figma-select>
+                    </div>
 
-                    <app-figma-select [options]="yearOptions()" [value]="filters().year"
-                        (valueChange)="updateFilter('year', $event)">
-                    </app-figma-select>
+                    <div class="filter-group-right">
+                        <app-figma-select title="Genre" [options]="genreOptions()" [value]="filters().genreId"
+                            (valueChange)="updateFilter('genreId', $event)">
+                        </app-figma-select>
 
-                    <app-figma-select [options]="ratingOptions" [value]="filters().minRating"
-                        (valueChange)="updateFilter('minRating', $event)">
-                    </app-figma-select>
+                        <app-figma-select title="Year" [options]="yearOptions()" [value]="filters().year"
+                            (valueChange)="updateFilter('year', $event)">
+                        </app-figma-select>
 
-                    <app-figma-select [options]="languageOptions()" [value]="filters().language"
-                        (valueChange)="updateFilter('language', $event)">
-                    </app-figma-select>
+                        <app-figma-select title="Rating" [options]="ratingOptions" [value]="filters().minRating"
+                            (valueChange)="updateFilter('minRating', $event)">
+                        </app-figma-select>
 
-                    <app-figma-select [options]="sortOptions" [value]="filters().sortBy"
-                        (valueChange)="updateFilter('sortBy', $event)">
-                    </app-figma-select>
+                        <app-figma-select title="Language" [options]="languageOptions()" [value]="filters().language"
+                            [alignRight]="true" (valueChange)="updateFilter('language', $event)">
+                        </app-figma-select>
+                    </div>
                 </div>
             </div>
         </header>
 
         @if (isLoading()) {
-        <div class="loading-state-minimal">
-            <div class="spinner-minimal"></div>
-            <p>Scanning Network...</p>
-        </div>
+        <app-loader></app-loader>
         }
 
         @if (errorMessage()) {

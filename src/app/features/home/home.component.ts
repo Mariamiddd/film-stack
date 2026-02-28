@@ -2,6 +2,8 @@ import { Component, inject, signal, computed, OnInit, effect, ViewChild, Element
 import { FormsModule } from '@angular/forms';
 import { TmdbService, Movie, Genre } from '../../core/services/tmdb.service';
 import { MovieCardComponent } from '../../shared/components/movie-card/movie-card.component';
+import { FigmaSelectComponent, SelectOption } from '../../shared/components/figma-select/figma-select.component';
+import { LoaderComponent } from '../../shared/components/loader/loader.component';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
@@ -13,7 +15,7 @@ import { Title, Meta } from '@angular/platform-browser';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, MovieCardComponent, RouterLink],
+  imports: [FormsModule, MovieCardComponent, RouterLink, FigmaSelectComponent, LoaderComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
@@ -55,6 +57,23 @@ export class HomeComponent implements OnInit {
   validMovies = computed(() => this.movies().filter(m => !!m.poster_path));
 
   featuredMovie = computed(() => this.validMovies().length > 0 ? this.validMovies()[0] : null);
+
+  // Computed Options for Figma Select
+  moodOptions: SelectOption[] = MOODS.map(m => ({
+    label: `${m.icon} ${m.label}`,
+    value: m.value.toString()
+  }));
+
+  intensityOptions: SelectOption[] = [
+    { label: 'Soft', value: 'Soft' },
+    { label: 'Balanced', value: 'Balanced' },
+    { label: 'Elite', value: 'Elite' }
+  ];
+
+  subGenreOptions = computed<SelectOption[]>(() => [
+    { label: 'All', value: '' },
+    ...this.getMoodGenres().map(g => ({ label: g.name, value: g.id.toString() }))
+  ]);
 
 
 
@@ -124,13 +143,17 @@ export class HomeComponent implements OnInit {
         } else {
           this.movies.set(data);
         }
-        this.isLoading.set(false);
-        this.isLoadingMore.set(false);
+        setTimeout(() => {
+          this.isLoading.set(false);
+          this.isLoadingMore.set(false);
+        }, 750);
       },
       error: () => {
         this.errorMessage.set('Failed to load content. Please check your connection.');
-        this.isLoading.set(false);
-        this.isLoadingMore.set(false);
+        setTimeout(() => {
+          this.isLoading.set(false);
+          this.isLoadingMore.set(false);
+        }, 750);
       }
     });
   }

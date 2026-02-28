@@ -8,12 +8,20 @@
             {{ movie().vote_average.toFixed(1) }}
         </div>
 
-        <div class="card-actions">
+        <div class="card-actions desktop-actions">
             <button class="action-btn" [class.active]="isInWishlist()" (click)="toggleWishlist($event)">
-                {{ isInWishlist() ? '✔ STORED' : '+ LIST' }}
+                {{ isInWishlist() ? '✔ WISHLIST' : '+ WISHLIST' }}
             </button>
             <button class="action-btn" [class.active]="isInFavorites()" (click)="toggleFavorite($event)">
-                {{ isInFavorites() ? '❤ FAV' : '❤ LIKE' }}
+                {{ isInFavorites() ? '❤ FAVORITES' : '+ FAVORITES' }}
+            </button>
+        </div>
+        <div class="mobile-actions">
+            <button class="mob-action-btn" [class.active]="isInWishlist()" (click)="toggleWishlist($event)">
+                {{ isInWishlist() ? '✔ LIST' : '+ LIST' }}
+            </button>
+            <button class="mob-action-btn" [class.active]="isInFavorites()" (click)="toggleFavorite($event)">
+                {{ isInFavorites() ? '❤ FAV' : '+ FAV' }}
             </button>
         </div>
     </div>

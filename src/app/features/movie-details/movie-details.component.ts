@@ -8,12 +8,13 @@ import { PurchaseService } from '../../core/services/purchase.service';
 import { WishlistService } from '../../core/services/wishlist.service';
 import { FavoriteService } from '../../core/services/favorites.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { LoaderComponent } from '../../shared/components/loader/loader.component';
 import { DomSanitizer, SafeResourceUrl, Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-movie-details',
   standalone: true,
-  imports: [DatePipe, UpperCasePipe, DecimalPipe],
+  imports: [DatePipe, UpperCasePipe, DecimalPipe, LoaderComponent],
   templateUrl: './movie-details.component.html',
   styleUrls: ['./movie-details.component.css']
 })
@@ -92,11 +93,11 @@ export class MovieDetailsComponent implements OnInit {
           this.loadTrailer(data.id, type);
           this.loadCredits(data.id, type);
         }
-        this.isLoading.set(false);
+        setTimeout(() => this.isLoading.set(false), 750);
       },
       error: () => {
         this.errorMessage.set('Failed to load details. Please try again.');
-        this.isLoading.set(false);
+        setTimeout(() => this.isLoading.set(false), 750);
       }
     });
   }

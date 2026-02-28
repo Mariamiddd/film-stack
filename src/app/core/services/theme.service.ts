@@ -10,10 +10,10 @@ export interface Mood {
 }
 
 export const MOODS: Mood[] = [
-    { label: 'Peaceful', icon: '🌿', value: 0, color: '#43aa8b', genres: ['10751', '99', '14'], description: 'Searching for inner serenity' },
+    { label: 'Peaceful', icon: '🌿', value: 0, color: '#A68E74', genres: ['10751', '99', '14'], description: 'Searching for inner serenity' },
     { label: 'Joyful', icon: '✨', value: 12, color: '#f9c74f', genres: ['35', '16', '10402'], description: 'Curation for celebration' },
     { label: 'Romantic', icon: '🍷', value: 25, color: '#ff6f59', genres: ['10749', '18'], description: 'Deep soulful connections' },
-    { label: 'Curious', icon: '🔭', value: 37, color: '#4d908e', genres: ['878', '9648'], description: 'Unlocking new worlds' },
+    { label: 'Curious', icon: '🔭', value: 37, color: '#8B4513', genres: ['878', '9648'], description: 'Unlocking new worlds' },
     { label: 'Inspired', icon: '🖋️', value: 50, color: '#ffffff', genres: ['36', '10752', '99'], description: 'Greatness in the making' },
     { label: 'Melancholic', icon: '🌧️', value: 62, color: '#577590', genres: ['18', '10770'], description: 'Beauty in sadness' },
     { label: 'Gutsy', icon: '🃏', value: 75, color: '#f94144', genres: ['80', '53'], description: 'High stakes and adrenaline' },
@@ -26,7 +26,7 @@ export const MOODS: Mood[] = [
 })
 export class ThemeService {
     // Dynamic glow color
-    activeColor = signal<string>('#baf2bb');
+    activeColor = signal<string>('#b9aaaa');
 
     // Mood Slider state
     moodValue = signal<number>(50);
@@ -39,13 +39,7 @@ export class ThemeService {
     });
 
     constructor() {
-        effect(() => {
-            const color = this.activeColor();
-            // Apply the active color to the global glow variables
-            document.documentElement.style.setProperty('--primary-glow', color);
-            // Add a very subtle tint to the main background
-            document.documentElement.style.setProperty('--bg-app-tint', `${color}15`);
-        });
+        // Dynamic CSS property overrides removed to favor static CSS definitions in styles.css
     }
 
     setActiveColor(color: string) {

@@ -58,7 +58,9 @@ export class AdminComponent implements OnInit {
   }
 
   getMessages(reportId: string) {
-    return this.reportService.messages().filter((m: any) => m.reportId === reportId);
+    return this.reportService.messages()
+      .filter((m: any) => m.reportId === reportId)
+      .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
   }
 
   sendChat(report: Report) {

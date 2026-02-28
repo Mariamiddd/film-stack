@@ -1,50 +1,8 @@
 <div class="home-view">
 
-  @if (isLoading() && validMovies().length === 0) {
-  <div class="loading-state">
-    <div class="spinner-minimal"></div>
-    <p>Calibrating Workspace...</p>
-  </div>
-  } @else {
-  <section class="mood-selector-container">
-    <div class="grid-system">
-      <div class="mood-dial-card col-span-12">
-        <div class="mood-header compact">
-          <div class="segmented-control">
-            <div class="segment-slider"
-              [style.left.%]="intensity() === 'Soft' ? 0 : intensity() === 'Balanced' ? 33.3 : 66.6"></div>
-            <button class="segment-btn" [class.active]="intensity() === 'Soft'"
-              (click)="setIntensity('Soft')">SOFT</button>
-            <button class="segment-btn" [class.active]="intensity() === 'Balanced'"
-              (click)="setIntensity('Balanced')">MID</button>
-            <button class="segment-btn" [class.active]="intensity() === 'Elite'"
-              (click)="setIntensity('Elite')">ELITE</button>
-          </div>
-        </div>
-
-        <!-- 3x3 Visual Icon Grid -->
-        <div class="mood-icon-grid">
-          @for (m of moods; track m.label) {
-          <div class="mood-icon-card" [class.active]="currentMood().label === m.label"
-            (click)="themeService.setMood(m.value)">
-            <span class="mood-tag">{{ m.label }}</span>
-          </div>
-          }
-        </div>
-
-        <!-- Genre Pills -->
-        <div class="genre-pills-container">
-          @for (genre of getMoodGenres(); track genre.id) {
-          <button class="genre-pill" [class.active]="activeGenre() === genre.id.toString()"
-            (click)="toggleGenre(genre.id.toString())">
-            {{ genre.name }}
-          </button>
-          }
-        </div>
-
-      </div>
-    </div>
-  </section>
+  @if (isLoading()) {
+  <app-loader></app-loader>
+  }
 
   <!-- Content Workspace -->
   <div class="workspace-layout grid-system">
@@ -52,14 +10,36 @@
     <!-- Main Content Area (Now span 12 for better horizontal flow) -->
     <div class="workspace-main col-span-12">
       <!-- Section: Mood Recommendations -->
-      <section class="workspace-section glass-panel">
-        <div class="ws-header">
-          <div class="ws-header-title">
-            <h2>Current Selections</h2>
-            <p class="ws-header-sub">Hand-picked for your {{ currentMood().label }} vibe</p>
+      <section class="workspace-section card-flat">
+        <header class="ws-header">
+          <div class="ws-header-top">
+            <div class="ws-header-title">
+              <h2>Current Selections</h2>
+              <p class="ws-header-sub">Hand-picked for your {{ currentMood().label }} vibe</p>
+            </div>
+            <a routerLink="/movies" class="ws-link-more">Full Catalog →</a>
           </div>
-          <a routerLink="/movies" class="ws-link-more">Full Catalog →</a>
-        </div>
+
+          <div class="ws-controls">
+            <div class="filter-row-figma">
+              <div class="filter-group-left">
+                <app-figma-select title="Mood" [options]="moodOptions" [value]="currentMood().value.toString()"
+                  defaultValue="50" (valueChange)="themeService.setMood(+$event)">
+                </app-figma-select>
+              </div>
+
+              <div class="filter-group-right">
+                <app-figma-select title="Intensity" [options]="intensityOptions" [value]="intensity()"
+                  defaultValue="Balanced" (valueChange)="setIntensity($any($event))">
+                </app-figma-select>
+
+                <app-figma-select title="Genre" [options]="subGenreOptions()" [value]="activeGenre() || ''"
+                  defaultValue="" [alignRight]="true" (valueChange)="toggleGenre($event)">
+                </app-figma-select>
+              </div>
+            </div>
+          </div>
+        </header>
         <div class="scroll-wrapper">
           <div class="scroll-controls">
             <button class="scroll-btn prev" (click)="scrollMovies('left')" aria-label="Scroll Left">
@@ -78,13 +58,10 @@
         </div>
       </section>
     </div>
+    @if (errorMessage()) {
+    <div class="error-container-figma card-flat">
+      <p>{{ errorMessage() }}</p>
+      <button (click)="refreshContent()" class="btn-figma btn-primary-figma">Retry Sequence</button>
+    </div>
+    }
   </div>
-  }
-
-  @if (errorMessage()) {
-  <div class="error-container-figma card-flat">
-    <p>{{ errorMessage() }}</p>
-    <button (click)="refreshContent()" class="btn-figma btn-primary-figma">Retry Sequence</button>
-  </div>
-  }
-</div>

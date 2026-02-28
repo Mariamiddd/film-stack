@@ -2,13 +2,14 @@ import { Component, inject, computed, signal, OnInit, effect } from '@angular/co
 import { TmdbService, Movie, Genre, FilterOptions } from '../../core/services/tmdb.service';
 import { MovieCardComponent } from '../../shared/components/movie-card/movie-card.component';
 import { FigmaSelectComponent, SelectOption } from '../../shared/components/figma-select/figma-select.component';
+import { LoaderComponent } from '../../shared/components/loader/loader.component';
 import { Title, Meta } from '@angular/platform-browser';
 import { forkJoin, map } from 'rxjs';
 
 @Component({
   selector: 'app-movies',
   standalone: true,
-  imports: [MovieCardComponent, FigmaSelectComponent],
+  imports: [MovieCardComponent, FigmaSelectComponent, LoaderComponent],
   templateUrl: './movies.component.html',
   styleUrl: './movies.component.css'
 })
@@ -119,13 +120,17 @@ export class MoviesComponent implements OnInit {
         } else {
           this.movies.set(data);
         }
-        this.isLoading.set(false);
-        this.isLoadingMore.set(false);
+        setTimeout(() => {
+          this.isLoading.set(false);
+          this.isLoadingMore.set(false);
+        }, 750);
       },
       error: () => {
         this.errorMessage.set('Failed to load movies. Please try again.');
-        this.isLoading.set(false);
-        this.isLoadingMore.set(false);
+        setTimeout(() => {
+          this.isLoading.set(false);
+          this.isLoadingMore.set(false);
+        }, 750);
       }
     });
   }

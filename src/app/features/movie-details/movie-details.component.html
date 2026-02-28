@@ -1,130 +1,123 @@
 <div class="details-view">
     @if (isLoading()) {
-    <div class="loading-state-minimal">
-        <div class="spinner-minimal"></div>
-        <p>Calibrating Content...</p>
-    </div>
-    } @else if (errorMessage()) {
+    <app-loader></app-loader>
+    }
+
+    @if (errorMessage()) {
     <div class="error-container-figma card-flat">
         <p>{{ errorMessage() }}</p>
-        <button (click)="goBack()" class="btn-figma btn-primary-figma">Return to Catalog</button>
-    </div>
-    } @else {
-    @let m = movie();
-    @if (m) {
-    <!-- Cinematic Backdrop -->
-    <div class="movie-hero-backdrop" [style.background-image]="'url(' + getBackdropUrl(m.backdrop_path) + ')'">
-        <div class="hero-gradient"></div>
-    </div>
-
-    <div class="details-workspace grid-system">
-        <!-- Sidebar Panel (3 columns) -->
-        <div class="details-sidebar">
-            <div class="poster-frame card-flat">
-                <img [src]="getPosterUrl(m.poster_path)" [alt]="m.title || m.name" class="movie-poster" />
-                @if (hasPurchased()) {
-                <div class="status-indicator">Licensed</div>
-                }
-            </div>
-
-            <div class="action-panel card-flat">
-                <div class="panel-section">
-                    @if (!hasPurchased()) {
-                    <span class="label">Purchase Access</span>
-                    <span class="value">$4.99 USD</span>
-                    } @else {
-                    <span class="label">Library Status</span>
-                    <span class="value">Ready for playback</span>
-                    }
-                </div>
-
-                <div class="action-group">
-                    @if (!hasPurchased()) {
-                    <button class="btn-figma btn-primary-figma" (click)="purchaseMovie()" [disabled]="isPurchasing()">
-                        @if (isPurchasing()) { <div class="spinner-minimal" style="width: 14px; height: 14px;"></div> }
-                        @else { Confirm Purchase }
-                    </button>
-                    } @else {
-                    <button class="btn-figma btn-primary-figma" (click)="toggleTrailer()">
-                        {{ showTrailer() ? 'Stop Stream' : 'Start Stream' }}
-                    </button>
-                    }
-
-                    <div class="utility-actions">
-                        <button class="btn-figma btn-outline-figma" (click)="toggleWishlist()"
-                            [class.active]="isInWishlist()">
-                            {{ isInWishlist() ? 'In Library' : 'Add to Library' }}
-                        </button>
-                        <button class="btn-figma btn-outline-figma" (click)="toggleFavorite()"
-                            [class.active]="isInFavorites()">
-                            {{ isInFavorites() ? 'Favorite' : 'Save' }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Content (9 columns) -->
-        <div class="details-main">
-            <button class="back-link" (click)="goBack()">← Workspace / Catalog</button>
-
-            <div class="meta-header">
-                <div class="meta-line">
-                    <span>{{ (m.release_date || m.first_air_date) | date:'yyyy' }}</span>
-                    <span class="dot"></span>
-                    <span>{{ (m.original_language || 'en') | uppercase }}</span>
-                    @if (m.runtime) {
-                    <span class="dot"></span>
-                    <span>{{ m.runtime }} MIN</span>
-                    }
-                </div>
-                <h1 class="details-title">{{ m.title || m.name }}</h1>
-                <div class="rating-indicator">
-                    <span class="label">Audience Score</span>
-                    <span class="score">{{ m.vote_average | number:'1.1-1' }} / 10</span>
-                </div>
-            </div>
-
-            <section class="info-section">
-                <h3>Synopsis</h3>
-                <p class="summary-text">{{ m.overview }}</p>
-            </section>
-
-            @if (cast().length > 0) {
-            <section class="info-section">
-                <h3>Principles</h3>
-                <div class="principles-grid">
-                    @for (actor of cast(); track actor.id) {
-                    <div class="principle-card">
-                        <div class="principle-img">
-                            <img [src]="getCastImageUrl(actor.profile_path)" [alt]="actor.name">
-                        </div>
-                        <div class="principle-info">
-                            <span class="p-name">{{ actor.name }}</span>
-                            <span class="p-role">{{ actor.character }}</span>
-                        </div>
-                    </div>
-                    }
-                </div>
-            </section>
-            }
-
-            @if (showTrailer() && hasPurchased()) {
-            <section class="playback-section card-flat">
-                <div class="playback-header">
-                    <h3>Secure Stream</h3>
-                    <button class="close-btn" (click)="toggleTrailer()">Close</button>
-                </div>
-                <div class="playback-container">
-                    <iframe [src]="getTrailerUrl()" frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
-                </div>
-            </section>
-            }
-        </div>
+        <button (click)="goBack()" class="btn-figma btn-primary-figma">Return</button>
     </div>
     }
+
+    @let m = movie();
+    @if (m) {
+    <div class="imdb-page-container">
+
+        <div class="header-titles">
+            <h1 class="details-title">{{ m.title || m.name }}</h1>
+            <div class="meta-line">
+                <span>{{ (m.release_date || m.first_air_date) | date:'yyyy' }}</span>
+                <span class="dot"></span>
+                <span>{{ (m.original_language || 'en') | uppercase }}</span>
+                @if (m.runtime) {
+                <span class="dot"></span>
+                <span>{{ m.runtime }} MIN</span>
+                }
+            </div>
+        </div>
+
+        <!-- Media Block -->
+        <div class="media-block">
+            <div class="media-poster">
+                <img [src]="getPosterUrl(m.poster_path)" [alt]="m.title || m.name" />
+            </div>
+            <div class="media-trailer">
+                @if (hasPurchased()) {
+                <iframe [src]="getTrailerUrl()" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+                } @else {
+                <div class="backdrop-wrapper" [style.background-image]="'url(' + getBackdropUrl(m.backdrop_path) + ')'">
+                    <div class="purchase-overlay">
+                        <div class="lock-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="var(--text-highlight)">
+                                <path
+                                    d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                            </svg>
+                        </div>
+                        <span class="purchase-text">In order to watch, please purchase access</span>
+                        <button class="btn-figma btn-primary-figma" (click)="purchaseMovie()"
+                            [disabled]="isPurchasing()">
+                            @if (isPurchasing()) {
+                            <div class="spinner-minimal"
+                                style="border-top-color: var(--bg-main); width: 14px; height: 14px;"></div>
+                            } @else {
+                            Purchase Access ($4.99)
+                            }
+                        </button>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+
+        <div class="details-split">
+            <!-- Left Column -->
+            <div class="details-left">
+                <p class="summary-text">{{ m.overview }}</p>
+
+                <div class="credits-list">
+                    <div class="credit-row" style="flex-direction: column; gap: 8px;">
+                        <span class="credit-label">Top Cast</span>
+                        <div class="top-cast-grid">
+                            @for (actor of cast().slice(0, 3); track actor.id) {
+                            <div class="cast-card">
+                                <div class="cast-img">
+                                    <img [src]="getCastImageUrl(actor.profile_path)" [alt]="actor.name">
+                                </div>
+                                <div class="cast-info">
+                                    <span class="cast-name">{{ actor.name }}</span>
+                                    <span class="cast-role">{{ actor.character }}</span>
+                                </div>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="details-right">
+                <div class="imdb-action-panel card-flat">
+                    <button class="btn-figma btn-outline-figma full-w" (click)="toggleWishlist()"
+                        [class.active]="isInWishlist()">
+                        @if (isInWishlist()) {
+                        <span style="color: var(--text-highlight); margin-right: 8px;">✔</span> In Library
+                        } @else {
+                        <span style="margin-right: 8px;">+</span> Add to Library
+                        }
+                    </button>
+
+                    <button class="btn-figma btn-outline-figma full-w" (click)="toggleFavorite()"
+                        [class.active]="isInFavorites()">
+                        <span style="margin-right: 8px;">★</span> {{ isInFavorites() ? 'Favorited' : 'Mark as Favorite'
+                        }}
+                    </button>
+
+                    <div class="rating-blocks">
+                        <div class="rating-block">
+                            <span class="rating-star">★</span>
+                            <div class="rating-text">
+                                <span class="score">{{ m.vote_average | number:'1.1-1' }}<span
+                                        class="out-of">/10</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     }
 </div>

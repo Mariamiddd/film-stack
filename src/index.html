@@ -6,12 +6,66 @@
   <title>Movieland</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/png" sizes="128x128"
-    href="https://res.cloudinary.com/dehx2iulz/image/upload/v1772091322/film-reel_jva2jz.png">
+  <link rel="icon" type="image/png" sizes="32x32"
+    href="https://res.cloudinary.com/dehx2iulz/image/upload/e_trim/v1772285333/video-camera_2_jgydrg.png?v=3">
 </head>
 
 <body>
-  <app-root></app-root>
+  <app-root>
+    <style>
+      @keyframes rotate {
+        from {
+          transform: rotate(0);
+        }
+
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .app-bootstrap-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(255, 252, 243, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 9999;
+      }
+
+      .loader__container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        height: 40px;
+      }
+
+      .loader__film {
+        position: absolute;
+        top: -30px;
+        left: 0;
+        display: flex;
+      }
+
+      .loader__film-img {
+        animation: rotate 1.5s linear infinite;
+      }
+    </style>
+    <div class="app-bootstrap-loader">
+      <div class="loader__container">
+        <div class="loader__film">
+          <img class="loader__film-img" src="/film.png" alt="" />
+          <img class="loader__film-img" src="/film.png" alt="" />
+        </div>
+        <img class="loader__camera" src="/camera.png" alt="" />
+      </div>
+    </div>
+  </app-root>
 </body>
 
 </html>

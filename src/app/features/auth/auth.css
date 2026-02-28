@@ -6,18 +6,18 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: var(--bg-deep);
+  background: var(--bg-main);
 }
 
 .auth-card {
-  background: var(--bg-surface);
+  background: var(--bg-card);
   backdrop-filter: blur(20px);
-  border-radius: 24px;
+  border-radius: var(--radius-analog);
   padding: 3rem;
   max-width: 480px;
   width: 100%;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
-  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-analog);
 }
 
 .signup-card {
@@ -30,15 +30,18 @@
 }
 
 .auth-header h1 {
-  font-size: 2.5rem;
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
   font-weight: 800;
-  color: var(--text-main);
+  text-transform: uppercase;
+  color: var(--text-analog);
   margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
 }
 
 .auth-header p {
-  color: var(--text-muted);
+  color: var(--text-analog);
+  opacity: 0.7;
   font-size: 1.1rem;
 }
 
@@ -62,43 +65,44 @@
 
 .form-group label {
   font-weight: 600;
-  color: var(--text-muted);
-  font-size: 0.9rem;
+  color: var(--text-analog);
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  opacity: 0.8;
 }
 
 .form-group input,
 .form-group select {
   padding: 12px 18px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid var(--border-analog);
+  border-radius: 8px;
   font-size: 1rem;
-  color: var(--text-main);
+  color: #000;
   transition: all 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: var(--primary);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 4px var(--primary-glow);
+  border-color: var(--text-highlight);
+  background: #ffffff;
 }
 
 .form-group input::placeholder {
-  color: var(--text-highlight);
+  color: var(--text-analog);
+  opacity: 0.4;
 }
 
 .form-group select option {
-  background: var(--bg-surface);
-  color: var(--text-main);
+  background: #ffffff;
+  color: #000;
 }
 
 .form-group input:disabled,
 .form-group select:disabled {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.5);
   cursor: not-allowed;
   opacity: 0.5;
 }
@@ -109,12 +113,14 @@
 }
 
 .submit-btn {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
   padding: 1rem 2rem;
-  background: var(--primary);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
+  background: var(--text-highlight);
+  color: #ffffff;
+  border: 1px solid var(--text-highlight);
+  border-radius: var(--radius-analog);
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -123,31 +129,31 @@
   justify-content: center;
   gap: 0.5rem;
   margin-top: 1rem;
-  box-shadow: 0 8px 16px var(--primary-glow);
 }
 
 .submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  background: var(--accent);
-  box-shadow: 0 12px 24px var(--primary-glow);
+  background: var(--hover);
+  border-color: var(--hover);
 }
 
 .submit-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  box-shadow: none;
+  transform: none;
 }
 
 .auth-switch {
   text-align: center;
   margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--glass-border);
-  color: var(--text-muted);
+  border-top: 1px solid var(--border-analog);
+  color: var(--text-analog);
+  font-size: 0.9rem;
 }
 
 .auth-switch a {
-  color: var(--primary);
+  color: var(--text-highlight);
   text-decoration: none;
   font-weight: 700;
 }
@@ -177,8 +183,8 @@
 }
 
 .spinner {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
@@ -217,5 +223,17 @@
 
   .auth-header p {
     font-size: 1rem;
+  }
+
+  .auth-form {
+    gap: 0.8rem;
+  }
+
+  .form-group {
+    gap: 0.4rem;
+  }
+
+  .submit-btn {
+    margin-top: 0.5rem;
   }
 }

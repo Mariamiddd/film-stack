@@ -7,9 +7,10 @@
     --text-analog: #562F00;
     --text-highlight: #BF4646;
 
-    --primary-glow: #baf2bb;
-    --header-accent: #562F00;
+    --primary-glow: #c54646;
+    --header-accent: #341d01;
     --header-bg: var(--text-highlight);
+    --hover: #761919;
     --bg-app-tint: transparent;
     --glow-opacity: 0.18;
 
@@ -66,17 +67,9 @@ body {
     mix-blend-mode: overlay;
 }
 
-/* Dynamic Background Glow Layer */
+/* Dynamic Background Glow Layer (Removed) */
 .glow-layer {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: -1;
-    background: radial-gradient(circle at 50% -20%,
-            color-mix(in srgb, var(--primary-glow), transparent 70%),
-            transparent 80%);
-    opacity: var(--glow-opacity);
-    transition: background 1.5s ease-in-out;
+    display: none;
 }
 
 h1,
@@ -141,14 +134,11 @@ h4 {
 main {
     flex: 1;
     min-width: 0;
-    padding: 40px;
+    padding: 0 20px;
     display: flex;
     flex-direction: column;
     gap: 48px;
     position: relative;
-    /* Cinematic Ghosting: Content fades out as it scrolls under the header */
-    mask-image: linear-gradient(to bottom, transparent, black 15px, black 95%, transparent);
-    -webkit-mask-image: linear-gradient(to bottom, transparent, black 15px, black 95%, transparent);
 }
 
 @media (max-width: 768px) {
@@ -163,13 +153,13 @@ main {
 /* Flat UI Components */
 .card-flat {
     background: var(--bg-card);
-    border: 1px solid var(--border-analog);
+    border: 1px solid var(--text-analog);
     border-radius: var(--radius-analog);
     transition: all 0.2s ease;
 }
 
 .card-flat:hover {
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--text-highlight);
 }
 
 @media (max-width: 1024px) {
@@ -181,6 +171,11 @@ main {
 @media (max-width: 768px) {
     .hide-mobile {
         display: none !important;
+    }
+
+    .grid-system {
+        gap: 8px;
+        /* Tighter movie cards on tiny screens */
     }
 }
 
@@ -309,12 +304,29 @@ button {
 }
 
 .load-more-btn {
-    min-width: 200px;
+    min-width: 220px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
+    border: 1px solid var(--text-highlight);
+    background-color: var(--text-highlight);
+    color: var(--bg-main);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.load-more-btn:hover:not(:disabled) {
+    background: var(--hover);
+    border-color: var(--hover);
+    color: var(--bg-main);
+    transform: translateY(-2px);
 }
 
 .load-more-btn:disabled {

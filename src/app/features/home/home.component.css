@@ -26,158 +26,28 @@
 
 
 
-/* Modern Mood Selection Suite */
-.mood-selector-container {
-  padding: 0;
-  position: relative;
-  z-index: 20;
-  margin-top: -50px;
-
-}
-
-.mood-dial-card {
-  padding: 20px 32px;
+.filter-row-figma {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  position: relative;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-}
-
-.mood-header.compact {
-  display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-}
-
-/* 1. Segmented Control */
-.segmented-control {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 3px;
-  border-radius: 10px;
-  display: flex;
-  position: relative;
-  width: 240px;
-  height: 38px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.segment-slider {
-  position: absolute;
-  top: 4px;
-  bottom: 4px;
-  width: 33.33%;
-  background: #fff;
-  border-radius: 8px;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-}
-
-.segment-btn {
-  flex: 1;
-  background: none;
-  border: none;
-  color: var(--text-highlight);
-  opacity: 0.6;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  position: relative;
-  z-index: 2;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.segment-btn.active {
-  color: #000;
-}
-
-/* 2. Visual Icon Grid (3x3) */
-.mood-icon-grid {
-  display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  gap: 12px;
   width: 100%;
-}
-
-.mood-icon-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--text-highlight);
-  padding: 10px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
-}
-
-.mood-icon-card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  transform: translateY(-4px);
-}
-
-.mood-icon-card.active {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--primary-glow);
-  box-shadow: 0 0 30px color-mix(in srgb, var(--primary-glow), transparent 80%);
-}
-
-.mood-icon {
-  font-size: 1.4rem;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
-}
-
-.mood-tag {
-  font-size: 0.55rem;
-  font-weight: 700;
-  color: var(--text-highlight);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-}
-
-.mood-icon-card.active .mood-tag {
-  color: var(--primary-glow);
-}
-
-/* 3. Genre Pills */
-.genre-pills-container {
-  display: flex;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 8px 0;
+  gap: 16px;
   flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
 }
 
-.genre-pill {
-  padding: 10px 24px;
-  background: #f1f1f1;
-  color: var(--text-highlight);
-  border: 1px solid var(--text-highlight);
-  border-radius: 50px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.filter-group-left,
+.filter-group-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
-.genre-pill:hover {
-  background: #e5e5e5;
-  color: #000;
-}
-
-.genre-pill.active {
-  background: var(--primary-glow);
-  color: #fff;
-  box-shadow: 0 4px 15px color-mix(in srgb, var(--primary-glow), transparent 60%);
-}
+/* 3. Genre Pills (Legacy/Removed) */
 
 
 .workspace-main {
@@ -188,47 +58,78 @@
 }
 
 .workspace-section {
-  padding: 0;
+  padding: 32px;
   margin-bottom: 40px;
 }
 
 .ws-header {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border-analog);
+  flex-direction: column;
+  gap: 20px;
   padding-bottom: 16px;
   margin-bottom: 32px;
+}
+
+.ws-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.ws-controls {
+  width: 100%;
 }
 
 .ws-header-title {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .ws-header h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-highlight);
   letter-spacing: -0.02em;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  margin: 0;
+  white-space: nowrap;
 }
 
 .ws-header-sub {
-  font-size: 0.8rem;
-  color: var(--text-highlight);
-  font-weight: 500;
-}
-
-.ws-link-more {
-  font-size: 0.8rem;
-  color: var(--text-highlight);
+  font-size: 0.85rem;
+  color: var(--text-analog);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.ws-link-more {
+  font-size: 0.75rem;
+  color: var(--bg-secondary);
+  background-color: var(--text-highlight);
+  border: 1px solid var(--text-highlight);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-mono);
 }
 
 .ws-link-more:hover {
-  color: var(--text-main);
+  background-color: var(--hover);
+  border-color: var(--hover);
+  color: var(--bg-secondary);
+  transform: translateY(-2px);
 }
 
 .scroll-wrapper {
@@ -265,10 +166,10 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--text-highlight);
+  background: var(--bg-secondary);
   /* Matching the deep red header */
-  border: 1px solid var(--header-accent);
-  color: var(--bg-main);
+  border: 1px solid var(--text-highlight);
+  color: var(--text-highlight);
   /* Cream arrow for integration */
   display: flex;
   align-items: center;
@@ -286,9 +187,10 @@
 }
 
 .scroll-btn:hover {
-  background: var(--header-accent);
+  background: var(--text-highlight);
   transform: scale(1.1);
-  box-shadow: 0 0 15px var(--header-accent);
+  color: var(--bg-main);
+  box-shadow: 0 0 2px var(--bg-main);
 }
 
 .scroll-btn:active {
@@ -401,19 +303,35 @@
 
 @media (max-width: 768px) {
   .workspace-main {
-    padding: 16px 0;
-    gap: 40px;
+    padding: 8px 0;
+    gap: 24px;
     /* Tighter section gaps on mobile */
   }
 
-  .mood-selector-container {
-    margin-top: -12px;
-    padding: 0 12px;
+  .workspace-section {
+    padding: 12px;
+    margin-bottom: 16px;
   }
+
+
 
   .mood-dial-card {
     padding: 16px;
     gap: 12px;
+  }
+
+  .filter-row-figma {
+    gap: 16px;
+    justify-content: flex-start;
+  }
+
+  .filter-group-left,
+  .filter-group-right {
+    gap: 12px;
+  }
+
+  .filter-group-right app-figma-select {
+    width: auto;
   }
 
   .mood-icon-grid {
@@ -447,8 +365,8 @@
   }
 
   .ws-header {
-    margin-bottom: 20px;
-    padding-bottom: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
   }
 
   .ws-header h2 {

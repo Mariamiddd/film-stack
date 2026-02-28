@@ -63,16 +63,11 @@ export class TopbarComponent {
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
 
-    // If search is open, check if we clicked the overlay backdrop
-    if (this.isSearchOpen()) {
-      if (target.classList.contains('search-overlay-cinematic')) {
-        this.toggleSearch();
-      }
-      return;
+    if (!target.closest('.notification-wrapper')) {
+      this.showInbox.set(false);
     }
 
     if (!this.el.nativeElement.contains(target)) {
-      this.showInbox.set(false);
       this.showResults.set(false);
     }
   }
@@ -131,6 +126,11 @@ export class TopbarComponent {
   }
 
   toggleInbox() {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/auth/sign-in']);
+      this.closeAll();
+      return;
+    }
     this.showInbox.update(v => !v);
   }
 
