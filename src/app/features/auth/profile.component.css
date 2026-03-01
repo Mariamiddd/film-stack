@@ -94,31 +94,26 @@
 /* Licensed Cards */
 .ws-grid-inner {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 20px;
     width: 100%;
 }
 
 @media (max-width: 1400px) {
     .ws-grid-inner {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
 }
 
 @media (max-width: 480px) {
     .ws-grid-inner {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
     }
 
-    .l-title {
-        white-space: normal;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
-        font-size: 0.85rem;
-        height: 2.6em;
+    /* Force columns to be exactly equal even with long text/buttons */
+    .ws-grid-inner>* {
+        min-width: 0 !important;
     }
 }
 
@@ -131,6 +126,8 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 4px;
     transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+    min-width: 0;
+    /* Important for grid item sizing */
 }
 
 .license-card:hover {
@@ -139,11 +136,12 @@
 }
 
 .license-poster {
-    aspect-ratio: 2/3;
-    border-radius: 2px;
-    overflow: hidden;
     position: relative;
-    background-color: var(--primary-glow);
+    width: 100%;
+    aspect-ratio: 2/3;
+    overflow: hidden;
+    background: var(--primary-glow);
+    padding: 6px;
 }
 
 .license-poster img {
@@ -154,7 +152,7 @@
 }
 
 .license-card:hover .license-poster img {
-    transform: scale(1.08);
+    transform: scale(1.02);
 }
 
 .license-tag {
@@ -171,25 +169,110 @@
     z-index: 5;
 }
 
+.l-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 12px;
+}
+
+.btn-report-custom {
+    flex: 1;
+    background: #fff7cd;
+    border: 1px solid var(--text-highlight);
+    color: var(--text-highlight);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+}
+
+.btn-report-custom:hover {
+    background: var(--text-highlight);
+    color: #fff7cd;
+}
+
+.btn-remove-custom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--text-highlight);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.btn-remove-custom:hover {
+    background: var(--text-highlight);
+    color: #fff;
+    border-color: var(--text-highlight);
+}
+
+@media (max-width: 480px) {
+    .l-actions-row {
+        gap: 6px;
+        padding-top: 8px;
+    }
+
+    .btn-report-custom {
+        padding: 5px 8px;
+        font-size: 0.6rem;
+    }
+
+    .btn-remove-custom {
+        width: 28px;
+        height: 28px;
+    }
+}
+
 .license-meta {
-    margin-top: 12px;
+    padding: 12px;
+    background: var(--primary-glow);
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
+    min-height: 80px;
 }
 
 .l-title {
-    font-size: 1rem;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
     font-weight: 700;
-    color: var(--header-accent);
-    white-space: nowrap;
+    color: var(--bg-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
     overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.3;
+    height: 2.6em;
+}
+
+.l-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.7rem;
+    color: var(--bg-secondary);
+    opacity: 0.8;
+    font-weight: 500;
 }
 
 .l-date {
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
 }
 
 /* Empty States */
@@ -317,40 +400,86 @@
     gap: 8px;
 }
 
-@media (max-width: 480px) {
-    .l-footer {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
+.mobile-actions {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    gap: 8px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+    z-index: 15;
+}
+
+@media (max-width: 768px) {
+    .desktop-actions {
+        display: none !important;
     }
 
-    .l-actions {
-        width: 100%;
-        justify-content: flex-start;
-        gap: 8px;
+    .mobile-actions {
+        display: flex;
+    }
+
+    .license-poster {
+        padding: 4px;
     }
 
     .license-meta {
-        gap: 2px;
+        padding: 8px;
+        min-height: 50px;
+        gap: 4px;
+    }
+
+    .l-title {
+        font-size: 0.8rem;
+        height: 2.6em;
+    }
+
+    .l-footer {
+        font-size: 0.65rem;
     }
 }
 
-.btn-report {
-    font-size: 0.7rem;
-    color: var(--text-highlight);
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-subtle);
-    padding: 6px 12px;
-    border-radius: 4px;
+.action-btn {
+    width: 100%;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 600;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
 }
 
-.btn-report:hover {
-    color: var(--bg-secondary);
-    border-color: var(--border-hover);
-    background-color: var(--header-accent);
+.action-btn:hover {
+    background: var(--primary-glow);
+    color: #000;
+    border-color: var(--primary-glow);
+}
+
+.mob-action-btn {
+    flex: 1;
+    padding: 6px 4px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 4px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    transition: all 0.2s ease;
 }
 
 .modal-overlay {
