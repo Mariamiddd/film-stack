@@ -11,7 +11,7 @@ export interface Report {
     reason: string;
     details: string;
     timestamp: Date;
-    status: 'pending' | 'resolved';
+    status: 'pending' | 'in-progress' | 'resolved';
     adminResponse?: string;
 }
 
@@ -68,6 +68,32 @@ export class ReportService {
         this.saveData();
     }
 
+    updateReportStatus(reportId: string, status: Report['status'], notifyMessage?: string) {
+        let userId = '';
+        let movieTitle = '';
+
+        this.reportsSignal.update(reports =>
+            reports.map(r => {
+                if (r.id === reportId) {
+                    userId = r.userId;
+                    movieTitle = r.movieTitle;
+                    return { ...r, status };
+                }
+                return r;
+            })
+        );
+
+        if (userId && notifyMessage) {
+            this.notificationService.addSystemNotificationForUser(
+                userId,
+                'Support Update',
+                `Update for ${movieTitle}: ${notifyMessage}`
+            );
+        }
+
+        this.saveData();
+    }
+
     resolveReport(reportId: string, response: string) {
         let userId = '';
         let movieTitle = '';
@@ -113,6 +139,11 @@ export class ReportService {
             );
         }
 
+        this.saveData();
+    }
+
+    deleteMessage(messageId: string) {
+        this.messagesSignal.update(messages => messages.filter(m => m.id !== messageId));
         this.saveData();
     }
 

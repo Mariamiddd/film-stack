@@ -12,6 +12,27 @@
     grid-row: 1;
 }
 
+.section-label {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--header-accent);
+    margin-bottom: 24px;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-label::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--text-highlight);
+    opacity: 0.2;
+}
+
 .profile-sidebar-col {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-analog);
@@ -307,7 +328,7 @@
     background: var(--bg-secondary);
     border: 1px solid var(--border-subtle);
     padding: 4px 8px;
-    border-radius: 2px;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -460,6 +481,68 @@
     border-radius: 4px;
     color: white;
     outline: none;
+}
+
+.l-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-remove-purchase {
+    background: transparent;
+    border: 1px solid var(--bg-main);
+    color: var(--text-highlight);
+    background-color: var(--bg-main);
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-remove-purchase:hover {
+    background: var(--header-accent);
+    color: var(--bg-main);
+    border-color: var(--text-highlight);
+}
+
+.bubble-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.bubble-wrapper.me {
+    flex-direction: row-reverse;
+}
+
+.delete-msg-btn-profile {
+    opacity: 0;
+    background: transparent;
+    border: none;
+    color: var(--text-highlight);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.bubble-wrapper:hover .delete-msg-btn-profile {
+    opacity: 0.4;
+}
+
+.delete-msg-btn-profile:hover {
+    opacity: 1 !important;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .badge-mini {

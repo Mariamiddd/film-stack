@@ -173,9 +173,18 @@ export class AuthService {
     return this.http
       .patch<User>(`${this.baseUrl}/update`, data, { headers: this.getHeaders() })
       .pipe(
-        tap(user => {
-          this.currentUser.set(user);
-          localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
+        tap(updatedUser => {
+          const current = this.currentUser();
+          if (current) {
+            // Merge existing data with new data (to keep id, role, etc)
+            const normalized: User = {
+              ...current,
+              ...updatedUser,
+              id: updatedUser.id || (updatedUser as any)._id || current.id
+            };
+            this.currentUser.set(normalized);
+            localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(normalized));
+          }
         }),
         catchError(error => throwError(() => error))
       );

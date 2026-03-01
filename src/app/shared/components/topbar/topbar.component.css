@@ -520,18 +520,19 @@
     backdrop-filter: blur(8px);
     z-index: 9999;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
 }
 
 .mobile-nav {
     width: 80%;
     max-width: 300px;
     background: var(--bg-main);
-    border-left: 2px solid var(--text-highlight);
+    border-right: 2px solid var(--text-highlight);
     padding: 32px;
     display: flex;
     flex-direction: column;
     gap: 16px;
+    animation: slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .mobile-nav-header {

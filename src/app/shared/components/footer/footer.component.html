@@ -1,24 +1,29 @@
 <footer class="footer">
     <div class="footer-content">
         <div class="footer-left">
-            <div class="logo">🎬 <span>Movieland</span></div>
-            <p>The ultimate destination for movie lovers. Discover, track, and share your favorite films.</p>
+            <div class="logo">
+                <img src="https://res.cloudinary.com/dehx2iulz/image/upload/v1772285333/video-camera_2_jgydrg.png"
+                    alt="Movieland Logo" class="footer-logo-img">
+                <span class="logo-text">MOVIE<span>LAND</span></span>
+            </div>
+            <p class="footer-tagline">Exploring the depth of global cinema. Your elite archival repository for film
+                discovery and tracking.</p>
         </div>
         <div class="footer-right">
             <div class="footer-group">
-                <h4>Explore</h4>
-                <a routerLink="/">Home</a>
+                <h4>Repository</h4>
+                <a routerLink="/">Discovery</a>
                 <a routerLink="/movies">Movies</a>
                 <a routerLink="/tv-shows">TV Shows</a>
             </div>
             <div class="footer-group">
-                <h4>Legal</h4>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
+                <h4>Terminal</h4>
+                <a routerLink="/auth/profile" [queryParams]="{tab: 'purchases'}">Library</a>
+                <a routerLink="/auth/profile" [queryParams]="{tab: 'settings'}">Workstation Settings</a>
             </div>
         </div>
     </div>
     <div class="footer-bottom">
-        <p>&copy; 2026 Movieland. Built with Angular 21.</p>
+        <p>&copy; 2026 All rights reserved to Mariam</p>
     </div>
 </footer>

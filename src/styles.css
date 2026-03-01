@@ -4,11 +4,11 @@
     /* The Imperial Vault Palette */
     --bg-secondary: #FFF7CD;
     --bg-main: #fdf6da;
-    --text-analog: #562F00;
+    --text-analog: #674011;
     --text-highlight: #BF4646;
 
     --primary-glow: #c54646;
-    --header-accent: #341d01;
+    --header-accent: #0e0801ce;
     --header-bg: var(--text-highlight);
     --hover: #761919;
     --bg-app-tint: transparent;
@@ -36,6 +36,31 @@
 
 html {
     scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+@media screen and (max-width: 1440px) {
+    html {
+        font-size: 15px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    html {
+        font-size: 13.5px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    html {
+        font-size: 13px;
+    }
 }
 
 body {
@@ -46,6 +71,13 @@ body {
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
     min-height: 100vh;
+    font-size: clamp(0.9rem, 0.85rem + 0.25vw, 1rem);
+}
+
+p,
+.p-text {
+    font-size: clamp(0.9rem, 0.85rem + 0.2vw, 1.05rem);
+    line-height: 1.6;
 }
 
 ::selection {
@@ -70,6 +102,22 @@ body {
 /* Dynamic Background Glow Layer (Removed) */
 .glow-layer {
     display: none;
+}
+
+h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+}
+
+h2 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+h3 {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+}
+
+h4 {
+    font-size: clamp(1rem, 2vw, 1.25rem);
 }
 
 h1,
@@ -286,13 +334,48 @@ button {
 
 .btn-outline-figma {
     background: transparent;
-    border: 1px solid var(--border-analog);
-    color: var(--text-main);
+    border: 1.5px solid var(--text-highlight);
+    color: var(--text-highlight);
+    border-radius: 20px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
 }
 
 .btn-outline-figma:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: #fff;
+    background: var(--text-highlight);
+    color: var(--bg-main);
+    border-color: var(--text-highlight);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(191, 70, 70, 0.2);
+}
+
+.btn-accent-figma {
+    background: var(--text-highlight);
+    color: var(--bg-main);
+    border: none;
+    border-radius: 20px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    padding: 0 32px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-accent-figma:hover:not(:disabled) {
+    background: var(--hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(118, 25, 25, 0.3);
+}
+
+.btn-accent-figma:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Load More Section */
@@ -355,6 +438,7 @@ button {
         opacity: 0;
         transform: scale(1.1);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -366,6 +450,7 @@ button {
         transform: translateY(-40px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -377,6 +462,7 @@ button {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -387,11 +473,25 @@ button {
     0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.1);
         box-shadow: 0 0 15px var(--header-accent);
     }
+
     100% {
         transform: scale(1);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
     }
 }

@@ -38,23 +38,30 @@ export class AdminComponent implements OnInit {
     this.title.setTitle('Admin | Movieland');
   }
 
-  resolveReport(report: Report) {
-    const response = this.responses[report.id];
-    if (!response) return;
+  startWorking(report: Report) {
+    this.reportService.updateReportStatus(report.id, 'in-progress', "We've started working on your report.");
 
-    this.reportService.resolveReport(report.id, response);
-
-    // Notify the user - in a real app this would go to their specific inbox
-    // For this demo, we'll store it in a shared way or it will appear when they log in
-    this.notificationService.show(`Response sent to ${report.userName}`, 'success');
-
-    // Send initial chat message as response
     this.reportService.sendMessage({
       senderId: 'admin',
       receiverId: report.userId,
       reportId: report.id,
-      message: response
+      message: "Hello! We've received your report and our support team is currently looking into it. We'll let you know as soon as it's fixed!"
     });
+
+    this.notificationService.show(`Status updated: Working on it`, 'info');
+  }
+
+  resolveReport(report: Report) {
+    this.reportService.updateReportStatus(report.id, 'resolved', "Your report has been marked as fixed.");
+
+    this.reportService.sendMessage({
+      senderId: 'admin',
+      receiverId: report.userId,
+      reportId: report.id,
+      message: "Great news! This problem has been resolved. If you need anything else, just open a new report! Have a cinematic day! 🍿"
+    });
+
+    this.notificationService.show(`Report marked as resolved`, 'success');
   }
 
   getMessages(reportId: string) {
@@ -75,6 +82,11 @@ export class AdminComponent implements OnInit {
     });
 
     this.chatInputs[report.id] = '';
+  }
+
+  deleteMessage(messageId: string) {
+    this.reportService.deleteMessage(messageId);
+    this.notificationService.show('Message deleted', 'info');
   }
 
   editMovie(movie: any) {

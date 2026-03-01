@@ -2,8 +2,8 @@
     <!-- Administrative Header Bar -->
     <header class="archival-header-bar">
         <div class="header-left">
-            <span class="analog-label">CONTROL UNIT</span>
-            <h2 class="sidebar-title">THE PROJECTION ROOM</h2>
+            <span class="analog-label">ADMIN DASHBOARD</span>
+            <h2 class="sidebar-title">MANAGEMENT HUB</h2>
         </div>
 
         <div class="header-right">
@@ -18,7 +18,7 @@
         <!-- Incidents Section is now the primary functional workspace -->
         <section class="archival-panel report-section no-margin-top">
             <div class="panel-header">
-                <h3 class="panel-title">ACTIVE INCIDENTS</h3>
+                <h3 class="panel-title">USER REPORTS</h3>
 
             </div>
 
@@ -29,9 +29,10 @@
                     <div class="mini-report-card" [class.selected]="selectedReportId() === report.id"
                         [class.resolved]="report.status === 'resolved'" (click)="selectReport(report.id)">
                         <div class="report-header-mini">
-                            <span class="user-stamp">{{ report.userName }} · {{ report.status }}</span>
+                            <span class="user-stamp">{{ report.userName }} · <span
+                                    class="status-pill {{ report.status }}">{{ report.status }}</span></span>
                             @if (report.status === 'pending') {
-                            <span class="mini-badge blink">ATTENTION</span>
+                            <span class="mini-badge blink">NEW</span>
                             }
                         </div>
                         <p class="report-desc">{{ report.movieTitle }} - {{ report.reason }}</p>
@@ -42,50 +43,77 @@
 
                 <!-- Detail/Resolution Pane -->
                 @if (selectedReport(); as report) {
-                <div class="resolution-pane archival-panel">
-                    <div class="pane-header">
-                        <h4>INCIDENT DETAIL: {{ report.id.substring(0,8) }}</h4>
-                        <span class="timestamp">{{ report.timestamp | date:'short' }}</span>
+                <div class="resolution-pane archival-panel modern-chat-layout">
+                    <div class="pane-header-actions">
+                        <div class="header-main-meta">
+                            <h4>REPORT ID: {{ report.id.substring(0,8) }}</h4>
+                            <span class="report-type">{{ report.movieTitle }} · {{ report.reason }}</span>
+                        </div>
+
+                        <div class="smart-action-button">
+                            @if (report.status === 'pending') {
+                            <button class="action-btn-retro red large-pill-minimal" (click)="startWorking(report)">
+                                <span class="vcr-icon">▶</span> START HELPING
+                            </button>
+                            } @else if (report.status === 'in-progress') {
+                            <button class="action-btn-retro teal large-pill-minimal" (click)="resolveReport(report)">
+                                <span class="vcr-icon">✓</span> MARK AS FIXED
+                            </button>
+                            } @else {
+                            <span class="badge-resolved-success">✓ ISSUED FIXED</span>
+                            }
+                        </div>
                     </div>
 
-                    <div class="incident-content">
-                        <p class="incident-details"><strong>DETAILS:</strong> {{ report.details }}</p>
-                        <div class="divider-dashed"></div>
-
-                        @if (report.status === 'pending') {
-                        <div class="resolution-form">
-                            <label class="analog-label">OFFICIAL RESPONSE</label>
-                            <textarea [(ngModel)]="responses[report.id]" placeholder="Enter resolution details..."
-                                class="archival-textarea"></textarea>
-                            <div class="form-actions">
-                                <button class="action-btn-retro red" (click)="resolveReport(report)">TRANSMIT
-                                    RESOLUTION</button>
-                            </div>
+                    <div class="messenger-workspace">
+                        <div class="details-strip">
+                            <p><strong>USER SAYS:</strong> "{{ report.details }}"</p>
                         </div>
-                        } @else {
-                        <div class="resolution-archived">
-                            <p class="analog-label">RESOLUTION LOGGED</p>
-                            <p class="archived-response">{{ report.adminResponse }}</p>
-                        </div>
-                        }
 
-                        <!-- Chat Section -->
-                        <div class="chat-system">
-                            <h5>DIRECT COMM-LINK</h5>
-                            <div class="chat-logs">
+                        <div class="chat-system-minimal">
+                            <div class="chat-logs-modern">
                                 @for (msg of getMessages(report.id); track msg.id) {
-                                <div class="msg-bubble" [class.admin-msg]="msg.senderId === 'admin'">
-                                    <span class="msg-sender">{{ msg.senderId === 'admin' ? 'SYSTEM' : 'USER' }}</span>
-                                    <p>{{ msg.message }}</p>
+                                <div class="msg-wrapper" [class.admin-wrapper]="msg.senderId === 'admin'"
+                                    [class.user-wrapper]="msg.senderId !== 'admin'">
+                                    <span class="msg-sender-label">{{ msg.senderId === 'admin' ? 'SUPPORT TEAM' :
+                                        report.userName }}</span>
+                                    <div class="msg-bubble-container">
+                                        <div class="msg-bubble">
+                                            <p>{{ msg.message }}</p>
+                                        </div>
+                                        <button class="delete-msg-btn" (click)="deleteMessage(msg.id)"
+                                            title="Delete message">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path
+                                                    d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                    </div>
                                     <span class="b-time">{{ msg.timestamp | date:'shortTime' }}</span>
                                 </div>
                                 }
                             </div>
-                            <div class="chat-input-row">
-                                <input type="text" [(ngModel)]="chatInputs[report.id]" placeholder="Type message..."
-                                    (keyup.enter)="sendChat(report)" class="archival-input">
-                                <button (click)="sendChat(report)" class="icon-btn-retro teal">SEND</button>
+
+                            @if (report.status !== 'resolved') {
+                            <div class="modern-input-row">
+                                <input type="text" [(ngModel)]="chatInputs[report.id]"
+                                    placeholder="Type a message to the user..." (keyup.enter)="sendChat(report)"
+                                    class="modern-archival-input">
+                                <button (click)="sendChat(report)" class="send-icon-btn red">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                    </svg>
+                                </button>
                             </div>
+                            } @else {
+                            <div class="closed-convo-notice">
+                                This support ticket has been closed.
+                            </div>
+                            }
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 <div class="info-section">
     <h3 class="section-label">Account Settings</h3>
     <div class="settings-grid">
-        <div class="settings-entry card-flat">
+        <div class="settings-entry">
             <h4>Personal Profile</h4>
             <p class="settings-help">Manage your workstation identification and preferences.</p>
 
@@ -36,13 +36,13 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn-figma btn-primary-figma" [disabled]="isUpdating">
+                <button type="submit" class="btn-accent-figma" [disabled]="isUpdating">
                     {{ isUpdating ? 'Saving State...' : 'Commit Changes' }}
                 </button>
             </form>
         </div>
 
-        <div class="settings-entry card-flat secure-section">
+        <div class="settings-entry secure-section">
             <h4>Password Security</h4>
             <p class="settings-help">Ensure your terminal access remains secure by rotating credentials.</p>
 
@@ -57,13 +57,13 @@
                     <input type="password" [(ngModel)]="passwordData.newPassword" name="newPassword"
                         [disabled]="isChangingPassword" class="figma-input" placeholder="At least 8 characters">
                 </div>
-                <button type="submit" class="btn-figma btn-primary-figma" [disabled]="isChangingPassword">
+                <button type="submit" class="btn-accent-figma" [disabled]="isChangingPassword">
                     {{ isChangingPassword ? 'UPDATING...' : 'Update Password' }}
                 </button>
             </form>
         </div>
 
-        <div class="settings-entry card-flat danger-zone-ws">
+        <div class="settings-entry danger-zone-ws">
             <h4 class="danger-title">Terminal Termination</h4>
             <p class="danger-help">Permanent deletion of all workspace data and licensed access.</p>
             <button (click)="onDeleteAccount()" class="btn-figma btn-outline-figma danger-btn" [disabled]="isDeleting">

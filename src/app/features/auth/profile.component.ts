@@ -174,7 +174,10 @@ export class ProfileComponent {
     this.successMessage.set(null);
     this.errorMessage.set(null);
 
-    this.authService.updateProfile(this.formData).subscribe({
+    // Filter out immutable fields that the API rejects
+    const { id, _id, email, role, ...updateData } = this.formData as any;
+
+    this.authService.updateProfile(updateData).subscribe({
       next: () => {
         this.isUpdating.set(false);
         this.successMessage.set('Profile updated successfully!');
@@ -182,7 +185,11 @@ export class ProfileComponent {
       },
       error: (error) => {
         this.isUpdating.set(false);
-        this.errorMessage.set(error.error?.error || 'Failed to update profile');
+        this.errorMessage.set(
+          error.error?.error ||
+          error.error?.message ||
+          (typeof error.error === 'string' ? error.error : 'Failed to update profile')
+        );
       }
     });
   }
@@ -214,7 +221,11 @@ export class ProfileComponent {
       },
       error: (error) => {
         this.isChangingPassword.set(false);
-        this.errorMessage.set(error.error?.error || 'Failed to change password');
+        this.errorMessage.set(
+          error.error?.error ||
+          error.error?.message ||
+          (typeof error.error === 'string' ? error.error : 'Failed to change password')
+        );
       }
     });
   }
@@ -275,5 +286,20 @@ export class ProfileComponent {
     });
 
     this.chatInputs[report.id] = '';
+  }
+
+  deleteMessage(messageId: string) {
+    this.reportService.deleteMessage(messageId);
+    this.notificationService.show('Message deleted', 'info');
+  }
+
+  removePurchase(movieId: number) {
+    const purchase = this.purchaseService.getPurchase(movieId);
+    if (!purchase) return;
+
+    if (confirm(`Remove "${purchase.movieTitle}" from your library? This action cannot be undone.`)) {
+      this.purchaseService.removePurchase(movieId);
+      this.notificationService.show('Movie removed from library', 'success');
+    }
   }
 }
