@@ -3,7 +3,7 @@
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: auto 1fr;
     gap: 16px;
-    padding: 24px 32px;
+    padding: 20px 28px;
 }
 
 .profile-header-full {
@@ -30,7 +30,7 @@
     flex: 1;
     height: 2px;
     background: var(--text-highlight);
-    opacity: 0.2;
+    opacity: 0.5;
 }
 
 .profile-sidebar-col {
@@ -84,6 +84,7 @@
     display: none;
 }
 
+
 .ws-info-card {
     padding: 16px;
 }
@@ -94,8 +95,8 @@
 /* Licensed Cards */
 .ws-grid-inner {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    gap: 15px;
     width: 100%;
 }
 
@@ -120,14 +121,12 @@
 .license-card {
     display: flex;
     flex-direction: column;
-    padding: 6px;
     cursor: pointer;
     background-color: var(--primary-glow);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 4px;
     transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
     min-width: 0;
-    /* Important for grid item sizing */
 }
 
 .license-card:hover {
@@ -141,7 +140,7 @@
     aspect-ratio: 2/3;
     overflow: hidden;
     background: var(--primary-glow);
-    padding: 6px;
+    padding: 4px;
 }
 
 .license-poster img {
@@ -174,7 +173,7 @@
     align-items: center;
     gap: 8px;
     margin-top: auto;
-    padding-top: 12px;
+    padding-top: 10px;
 }
 
 .btn-report-custom {
@@ -182,7 +181,7 @@
     background: #fff7cd;
     border: 1px solid var(--text-highlight);
     color: var(--text-highlight);
-    padding: 6px 12px;
+    padding: 5px 12px;
     border-radius: 6px;
     font-size: 0.7rem;
     font-weight: 700;
@@ -193,17 +192,17 @@
 }
 
 .btn-report-custom:hover {
-    background: var(--text-highlight);
-    color: #fff7cd;
+    background: var(--border-analog);
+    color: var(--bg-secondary);
 }
 
 .btn-remove-custom {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: rgba(0, 0, 0, 0.05);
+    width: 28px;
+    height: 28px;
+    background: var(--bg-secondary);
     border: 1px solid rgba(0, 0, 0, 0.1);
     color: var(--text-highlight);
     border-radius: 6px;
@@ -213,9 +212,9 @@
 }
 
 .btn-remove-custom:hover {
-    background: var(--text-highlight);
-    color: #fff;
-    border-color: var(--text-highlight);
+    background: var(--border-analog);
+    color: var(--bg-secondary);
+    border-color: var(--border-analog);
 }
 
 @media (max-width: 480px) {
@@ -236,13 +235,14 @@
 }
 
 .license-meta {
-    padding: 12px;
+    padding: 10px 12px;
     background: var(--primary-glow);
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    min-height: 80px;
+    gap: 4px;
+    min-height: 115px;
+    /* Ensures buttons align across the row */
 }
 
 .l-title {
@@ -256,8 +256,7 @@
     -webkit-box-orient: vertical;
     line-clamp: 2;
     overflow: hidden;
-    line-height: 1.3;
-    height: 2.6em;
+    line-height: 1.25;
 }
 
 .l-footer {

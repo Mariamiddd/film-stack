@@ -323,13 +323,13 @@
     color: var(--bg-main);
     font-size: 0.6rem;
     font-weight: 800;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 10px var(--header-accent);
+    box-shadow: 0 0 4px var(--header-accent);
     animation: pulse 2s infinite;
 }
 
@@ -492,14 +492,11 @@
 }
 
 
-
 .profile-container {
     display: flex;
     align-items: center;
     gap: 12px;
 }
-
-
 
 .avatar-container {
     width: 32px;
@@ -508,7 +505,7 @@
     border: 1px solid var(--text-highlight);
     overflow: hidden;
     cursor: pointer;
-    box-shadow: 0 0 10px var(--header-accent);
+    box-shadow: 0 0 4px var(--header-accent);
 }
 
 .avatar-container img {
@@ -671,8 +668,8 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -709,7 +706,7 @@
     width: 0%;
     opacity: 0;
     color: white;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: 700;
     font-family: var(--font-mono);
     transition-duration: .3s;

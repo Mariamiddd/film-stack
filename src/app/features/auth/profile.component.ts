@@ -125,12 +125,19 @@ export class ProfileComponent {
 
   private recoverMissingRatings() {
     this.wishlistItems().forEach(item => {
-      if (!item.rating || item.rating === 0) {
+      // Check for missing rating OR missing release date
+      if (!item.rating || item.rating === 0 || !item.releaseDate) {
         this.tmdbService.getMovieDetails(item.movieId.toString()).subscribe({
-          next: (m) => this.wishlistService.updateRating(item.movieId, m.vote_average),
+          next: (m) => {
+            if (!item.rating) this.wishlistService.updateRating(item.movieId, m.vote_average);
+            if (!item.releaseDate && m.release_date) this.wishlistService.updateMetadata(item.movieId, m.release_date, 'movie');
+          },
           error: () => {
             this.tmdbService.getTvDetails(item.movieId.toString()).subscribe({
-              next: (tv) => this.wishlistService.updateRating(item.movieId, tv.vote_average)
+              next: (tv) => {
+                if (!item.rating) this.wishlistService.updateRating(item.movieId, tv.vote_average);
+                if (!item.releaseDate && tv.first_air_date) this.wishlistService.updateMetadata(item.movieId, tv.first_air_date, 'tv');
+              }
             });
           }
         });
@@ -138,12 +145,26 @@ export class ProfileComponent {
     });
 
     this.favoriteItems().forEach(item => {
-      if (!item.rating || item.rating === 0) {
+      if (!item.rating || item.rating === 0 || !item.releaseDate) {
         this.tmdbService.getMovieDetails(item.movieId.toString()).subscribe({
-          next: (m) => this.favoriteService.updateRating(item.movieId, m.vote_average),
+          next: (m) => {
+            if (!item.rating) this.favoriteService.updateRating(item.movieId, m.vote_average);
+            if (!item.releaseDate && m.release_date) {
+              this.favoriteService.updateMetadata(item.movieId, m.release_date, 'movie');
+            } else if (!item.mediaType && item.releaseDate) {
+              this.favoriteService.updateMetadata(item.movieId, item.releaseDate, 'movie');
+            }
+          },
           error: () => {
             this.tmdbService.getTvDetails(item.movieId.toString()).subscribe({
-              next: (tv) => this.favoriteService.updateRating(item.movieId, tv.vote_average)
+              next: (tv) => {
+                if (!item.rating) this.favoriteService.updateRating(item.movieId, tv.vote_average);
+                if (!item.releaseDate && tv.first_air_date) {
+                  this.favoriteService.updateMetadata(item.movieId, tv.first_air_date, 'tv');
+                } else if (!item.mediaType && item.releaseDate) {
+                  this.favoriteService.updateMetadata(item.movieId, item.releaseDate, 'tv');
+                }
+              }
             });
           }
         });
@@ -155,6 +176,11 @@ export class ProfileComponent {
 
   getPosterUrl(path: string | null): string {
     return this.tmdbService.getPosterUrl(path);
+  }
+
+  getPurchaseLink(purchase: any): string[] {
+    const type = purchase.mediaType || 'movie';
+    return [type === 'movie' ? '/movie' : '/tv', purchase.movieId.toString()];
   }
 
   formatDate(date: Date): string {

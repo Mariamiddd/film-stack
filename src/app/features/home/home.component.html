@@ -23,14 +23,14 @@
           <div class="ws-controls">
             <div class="filter-row-figma">
               <div class="filter-group-left">
-                <app-figma-select title="Mood" [options]="moodOptions" [value]="currentMood().value.toString()"
-                  defaultValue="50" (valueChange)="themeService.setMood(+$event)">
+                <app-figma-select title="Mood" [options]="moodOptions" [value]="currentMood().id"
+                  defaultValue="inspired" (valueChange)="themeService.setMood($event)">
                 </app-figma-select>
               </div>
 
               <div class="filter-group-right">
-                <app-figma-select title="Intensity" [options]="intensityOptions" [value]="intensity()"
-                  defaultValue="Balanced" (valueChange)="setIntensity($any($event))">
+                <app-figma-select title="Quality" [options]="intensityOptions" [value]="intensity()"
+                  defaultValue="Premium" (valueChange)="setIntensity($any($event))">
                 </app-figma-select>
 
                 <app-figma-select title="Genre" [options]="subGenreOptions()" [value]="activeGenre() || ''"

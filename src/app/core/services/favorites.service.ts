@@ -7,6 +7,8 @@ export interface FavoriteItem {
     movieTitle: string;
     posterPath: string | null;
     rating: number;
+    releaseDate?: string;
+    mediaType?: 'movie' | 'tv';
     addedDate: Date;
 }
 
@@ -68,7 +70,7 @@ export class FavoriteService {
 
     private readonly notificationService = inject(NotificationService);
 
-    addToFavorites(movieId: number, movieTitle: string, posterPath: string | null, rating: number = 0): boolean {
+    addToFavorites(movieId: number, movieTitle: string, posterPath: string | null, rating: number = 0, releaseDate?: string, mediaType?: 'movie' | 'tv'): boolean {
         if (this.isInFavorites(movieId)) {
             return false;
         }
@@ -78,6 +80,8 @@ export class FavoriteService {
             movieTitle,
             posterPath,
             rating,
+            releaseDate,
+            mediaType,
             addedDate: new Date()
         };
 
@@ -102,6 +106,13 @@ export class FavoriteService {
     updateRating(movieId: number, rating: number): void {
         this.favorites.update(f => f.map(item =>
             item.movieId === movieId ? { ...item, rating } : item
+        ));
+        this.saveFavorites();
+    }
+
+    updateMetadata(movieId: number, releaseDate: string, mediaType?: 'movie' | 'tv'): void {
+        this.favorites.update(f => f.map(item =>
+            item.movieId === movieId ? { ...item, releaseDate, mediaType: item.mediaType || mediaType } : item
         ));
         this.saveFavorites();
     }

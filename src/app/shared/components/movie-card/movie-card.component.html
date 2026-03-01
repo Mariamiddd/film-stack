@@ -1,4 +1,4 @@
-<div class="movie-card" [routerLink]="getContentLink()" (mouseenter)="onMouseEnter()">
+<div class="movie-card" [routerLink]="getContentLink()">
     <div class="poster-wrapper">
 
         <img [src]="getPosterUrl(movie().poster_path)" [alt]="movie().title || movie().name" class="poster-image"
@@ -29,7 +29,7 @@
         <h3 class="movie-title">{{ movie().title || movie().name }}</h3>
         <div class="card-meta">
             <span class="meta-item">{{ getYear(movie().release_date || movie().first_air_date) }}</span>
-            <span class="meta-item">{{ movie().media_type === 'tv' ? 'SERIES' : 'FILM' }}</span>
+            <span class="meta-item">{{ displayType() }}</span>
         </div>
     </div>
 </div>

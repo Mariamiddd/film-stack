@@ -7,6 +7,8 @@ export interface WishlistItem {
     movieTitle: string;
     posterPath: string | null;
     rating: number;
+    releaseDate?: string;
+    mediaType?: 'movie' | 'tv';
     addedDate: Date;
 }
 
@@ -68,7 +70,7 @@ export class WishlistService {
 
     private readonly notificationService = inject(NotificationService);
 
-    addToWishlist(movieId: number, movieTitle: string, posterPath: string | null, rating: number = 0): boolean {
+    addToWishlist(movieId: number, movieTitle: string, posterPath: string | null, rating: number = 0, releaseDate?: string, mediaType?: 'movie' | 'tv'): boolean {
         if (this.isInWishlist(movieId)) {
             return false;
         }
@@ -78,6 +80,8 @@ export class WishlistService {
             movieTitle,
             posterPath,
             rating,
+            releaseDate,
+            mediaType,
             addedDate: new Date()
         };
 
@@ -102,6 +106,13 @@ export class WishlistService {
     updateRating(movieId: number, rating: number): void {
         this.wishlist.update(w => w.map(item =>
             item.movieId === movieId ? { ...item, rating } : item
+        ));
+        this.saveWishlist();
+    }
+
+    updateMetadata(movieId: number, releaseDate: string, mediaType?: 'movie' | 'tv'): void {
+        this.wishlist.update(w => w.map(item =>
+            item.movieId === movieId ? { ...item, releaseDate, mediaType: item.mediaType || mediaType } : item
         ));
         this.saveWishlist();
     }

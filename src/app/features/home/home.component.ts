@@ -4,8 +4,6 @@ import { TmdbService, Movie, Genre } from '../../core/services/tmdb.service';
 import { MovieCardComponent } from '../../shared/components/movie-card/movie-card.component';
 import { FigmaSelectComponent, SelectOption } from '../../shared/components/figma-select/figma-select.component';
 import { LoaderComponent } from '../../shared/components/loader/loader.component';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { SearchService } from '../../core/services/search.service';
@@ -46,7 +44,7 @@ export class HomeComponent implements OnInit {
   isLoadingMore = signal(false);
   errorMessage = signal<string | null>(null);
   currentPage = signal(1);
-  intensity = signal<'Soft' | 'Balanced' | 'Elite'>('Balanced');
+  intensity = signal<'Standard' | 'Premium' | 'Masterpiece'>('Premium');
 
   // For the genre pills
   allGenres = signal<Genre[]>([]);
@@ -60,14 +58,14 @@ export class HomeComponent implements OnInit {
 
   // Computed Options for Figma Select
   moodOptions: SelectOption[] = MOODS.map(m => ({
-    label: `${m.icon} ${m.label}`,
-    value: m.value.toString()
+    label: m.label,
+    value: m.id
   }));
 
   intensityOptions: SelectOption[] = [
-    { label: 'Soft', value: 'Soft' },
-    { label: 'Balanced', value: 'Balanced' },
-    { label: 'Elite', value: 'Elite' }
+    { label: 'Standard', value: 'Standard' },
+    { label: 'Premium', value: 'Premium' },
+    { label: 'Masterpiece', value: 'Masterpiece' }
   ];
 
   subGenreOptions = computed<SelectOption[]>(() => [
@@ -121,11 +119,11 @@ export class HomeComponent implements OnInit {
       const mood = this.currentMood();
       const level = this.intensity();
 
-      // Map intensity to API parameters
+      // Map quality tier to API parameters
       const config = {
-        'Soft': { minRating: '6.0', minVoteCount: '100' },
-        'Balanced': { minRating: '7.2', minVoteCount: '500' },
-        'Elite': { minRating: '8.2', minVoteCount: '1500' }
+        'Standard': { minRating: '6.0', minVoteCount: '100' },
+        'Premium': { minRating: '7.2', minVoteCount: '500' },
+        'Masterpiece': { minRating: '8.2', minVoteCount: '1500' }
       }[level];
 
       request$ = this.tmdbService.getMovies({
@@ -174,7 +172,7 @@ export class HomeComponent implements OnInit {
     return this.allGenres().filter(g => moodGenreIds.includes(g.id.toString()));
   }
 
-  setIntensity(level: 'Soft' | 'Balanced' | 'Elite') {
+  setIntensity(level: 'Standard' | 'Premium' | 'Masterpiece') {
     this.intensity.set(level);
   }
 

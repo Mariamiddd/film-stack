@@ -25,8 +25,8 @@
                 } @else {
                 <div class="ws-grid-inner">
                     @for (purchase of purchases(); track purchase.movieId) {
-                    <div class="license-card card-flat" [routerLink]="['/movie', purchase.movieId]">
-                        <div class="license-poster" [routerLink]="['/movie', purchase.movieId]">
+                    <div class="license-card card-flat" [routerLink]="getPurchaseLink(purchase)">
+                        <div class="license-poster" [routerLink]="getPurchaseLink(purchase)">
                             <img [src]="getPosterUrl(purchase.posterPath)" [alt]="purchase.movieTitle" loading="lazy">
                             <div class="license-tag">Active</div>
                         </div>
@@ -71,7 +71,7 @@
                 <div class="ws-grid-inner">
                     @for (item of wishlistItems(); track item.movieId) {
                     <app-movie-card
-                        [movie]="{id: item.movieId, title: item.movieTitle, poster_path: item.posterPath, vote_average: item.rating || 0, overview: ''}"></app-movie-card>
+                        [movie]="{id: item.movieId, title: item.movieTitle, poster_path: item.posterPath, vote_average: item.rating || 0, release_date: item.releaseDate, media_type: item.mediaType || 'movie', overview: ''}"></app-movie-card>
                     }
                 </div>
                 }
@@ -90,7 +90,7 @@
                 <div class="ws-grid-inner">
                     @for (item of favoriteItems(); track item.movieId) {
                     <app-movie-card
-                        [movie]="{id: item.movieId, title: item.movieTitle, poster_path: item.posterPath, vote_average: item.rating || 0, overview: ''}"></app-movie-card>
+                        [movie]="{id: item.movieId, title: item.movieTitle, poster_path: item.posterPath, vote_average: item.rating || 0, release_date: item.releaseDate, media_type: item.mediaType || 'movie', overview: ''}"></app-movie-card>
                     }
                 </div>
                 }

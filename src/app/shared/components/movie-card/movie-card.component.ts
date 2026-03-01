@@ -30,6 +30,11 @@ export class MovieCardComponent {
   isInWishlist = computed(() => this.wishlistService.isInWishlist(this.movie().id));
   isInFavorites = computed(() => this.favoriteService.isInFavorites(this.movie().id));
 
+  displayType = computed(() => {
+    const contentType = this.movie().media_type || this.type();
+    return contentType === 'tv' ? 'SERIES' : 'FILM';
+  });
+
   getPosterUrl(path: string | null): string {
     return this.tmdbService.getPosterUrl(path);
   }
@@ -43,38 +48,8 @@ export class MovieCardComponent {
   }
 
   getContentLink(): string[] {
-    return [this.type() === 'movie' ? '/movie' : '/tv', this.movie().id.toString()];
-  }
-
-  onMouseEnter(): void {
-    const movie = this.movie();
-    let color = '';
-
-    // Prioritize specific 'Movieland' genre colors
-    if (movie.genre_ids && movie.genre_ids.length > 0) {
-      const primaryGenre = movie.genre_ids[0].toString();
-      const genreColor = this.themeService.getGenreColor(primaryGenre);
-      // We check if it returned a specific genre color or the default
-      if (genreColor !== '#43aa8b') {
-        color = genreColor;
-      }
-    }
-
-    // Fallback to generated color if not a branded genre
-    if (!color) {
-      color = this.generateColor(movie.title || movie.name || '');
-    }
-
-    // this.themeService.setActiveColor(color); // Removed to prevent dynamic background color changes
-  }
-
-  private generateColor(str: string): string {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const h = Math.abs(hash % 360);
-    return `hsl(${h}, 60%, 50%)`;
+    const contentType = this.movie().media_type || this.type();
+    return [contentType === 'movie' ? '/movie' : '/tv', this.movie().id.toString()];
   }
 
   toggleWishlist(event: Event): void {
@@ -90,7 +65,9 @@ export class MovieCardComponent {
         this.movie().id,
         this.movie().title || this.movie().name || 'Unknown',
         this.movie().poster_path,
-        this.movie().vote_average
+        this.movie().vote_average,
+        this.movie().release_date || this.movie().first_air_date,
+        this.type()
       );
     }
   }
@@ -108,7 +85,9 @@ export class MovieCardComponent {
         this.movie().id,
         this.movie().title || this.movie().name || 'Unknown',
         this.movie().poster_path,
-        this.movie().vote_average
+        this.movie().vote_average,
+        this.movie().release_date || this.movie().first_air_date,
+        this.type()
       );
     }
   }

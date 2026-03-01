@@ -1,11 +1,10 @@
 .movie-card {
     position: relative;
     background-color: var(--primary-glow);
-    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 4px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+    transition: all 0.2s cubic-bezier(0.2, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
 }
@@ -20,7 +19,6 @@
     width: 100%;
     aspect-ratio: 2/3;
     overflow: hidden;
-    background: var(--primary-glow);
     padding: 6px;
     color: var(--bg-secondary);
 }
@@ -36,24 +34,20 @@
     transform: scale(1.02);
 }
 
-/* Poster Shadow (Removed) */
 .poster-wrapper::before {
     display: none;
 }
-
-
 
 .card-rating {
     position: absolute;
     top: 12px;
     right: 12px;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-    color: #fff;
+    background: var(--text-highlight, rgba(234, 42, 42, 0.6));
+    color: var(--bg-main);
     padding: 2px 8px;
     border-radius: 20px;
     font-family: var(--font-mono);
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 700;
     z-index: 2;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -76,7 +70,6 @@
     flex-direction: column;
     gap: 8px;
     min-height: 80px;
-    /* Force consistent text area */
 }
 
 .movie-title {
@@ -92,7 +85,6 @@
     overflow: hidden;
     line-height: 1.3;
     height: 2.6em;
-    /* Exactly 2 lines */
 }
 
 .card-meta {
@@ -132,7 +124,7 @@
     opacity: 0;
     transition: all 0.3s ease;
     z-index: 10;
-    padding: 20px;
+    padding: 10px;
 }
 
 .movie-card:hover .card-actions {
@@ -184,7 +176,7 @@
     background: rgba(0, 0, 0, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(4px);
-    color: #fff;
+    color: var(--text-highlight);
     font-family: var(--font-mono);
     font-size: 0.6rem;
     font-weight: 700;

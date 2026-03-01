@@ -138,7 +138,7 @@ export class MovieDetailsComponent implements OnInit {
         m.title || m.name || 'Unknown',
         m.poster_path,
         4.99,
-        m.media_type || 'movie'
+        this.type() // Use component type input
       );
 
       this.isPurchasing.set(false);
@@ -164,7 +164,14 @@ export class MovieDetailsComponent implements OnInit {
     if (this.isInWishlist()) {
       this.wishlistService.removeFromWishlist(m.id);
     } else {
-      this.wishlistService.addToWishlist(m.id, m.title || m.name || 'Unknown', m.poster_path, m.vote_average);
+      this.wishlistService.addToWishlist(
+        m.id,
+        m.title || m.name || 'Unknown',
+        m.poster_path,
+        m.vote_average,
+        m.release_date || m.first_air_date,
+        this.type()
+      );
     }
   }
 
@@ -175,7 +182,14 @@ export class MovieDetailsComponent implements OnInit {
     if (this.isInFavorites()) {
       this.favoriteService.removeFromFavorites(m.id);
     } else {
-      this.favoriteService.addToFavorites(m.id, m.title || m.name || 'Unknown', m.poster_path, m.vote_average);
+      this.favoriteService.addToFavorites(
+        m.id,
+        m.title || m.name || 'Unknown',
+        m.poster_path,
+        m.vote_average,
+        m.release_date || m.first_air_date,
+        this.type()
+      );
     }
   }
 
