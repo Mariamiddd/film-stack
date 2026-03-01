@@ -9,7 +9,7 @@
             </svg>
         </button>
 
-        <a routerLink="/" class="logo" (click)="closeAll()">
+        <a [routerLink]="['/']" class="logo" (click)="closeAll()">
             <span class="logo-icon">
                 <img src="https://res.cloudinary.com/dehx2iulz/image/upload/v1772285333/video-camera_2_jgydrg.png"
                     alt="Movieland Logo">
@@ -131,7 +131,7 @@
 <div class="mobile-nav-overlay" (click)="layout.closeSidebar()">
     <nav class="mobile-nav" (click)="$event.stopPropagation()">
         <div class="mobile-nav-header">
-            <a routerLink="/" class="logo mobile-only-logo" (click)="closeAll()">
+            <a [routerLink]="['/']" class="logo mobile-only-logo" (click)="closeAll()">
                 <span class="logo-icon">
                     <img src="https://res.cloudinary.com/dehx2iulz/image/upload/v1772285333/video-camera_2_jgydrg.png"
                         alt="Movieland Logo">
