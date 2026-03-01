@@ -94,21 +94,14 @@
 /* Licensed Cards */
 .ws-grid-inner {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 20px;
     width: 100%;
 }
 
 @media (max-width: 1400px) {
     .ws-grid-inner {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (max-width: 900px) {
-    .ws-grid-inner {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
 }
 
@@ -125,6 +118,7 @@
         line-clamp: 2;
         -webkit-box-orient: vertical;
         font-size: 0.85rem;
+        height: 2.6em;
     }
 }
 
