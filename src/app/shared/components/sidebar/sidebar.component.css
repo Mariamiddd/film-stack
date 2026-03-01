@@ -45,6 +45,12 @@
     color: #fff;
     letter-spacing: -0.05em;
     text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.logo:hover {
+    opacity: 1;
+    filter: brightness(1.15);
 }
 
 .logo-text span {

@@ -30,7 +30,15 @@
         </a>
         @if (authService.isAdmin()) {
         <a routerLink="/admin" routerLinkActive="active" class="nav-link admin-link">
-            <span class="vcr-icon">⚙</span> CONTROL
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <circle cx="19" cy="11" r="3"></circle>
+                <line x1="19" y1="8" x2="19" y2="14"></line>
+                <line x1="16" y1="11" x2="22" y2="11"></line>
+            </svg>
+            ADMIN
         </a>
         }
     </nav>
@@ -152,7 +160,15 @@
         </a>
         @if (authService.isAdmin()) {
         <a routerLink="/admin" routerLinkActive="active" class="mobile-link admin-link" (click)="closeAll()">
-            ADMIN CONTROL
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <circle cx="19" cy="11" r="3"></circle>
+                <line x1="19" y1="8" x2="19" y2="14"></line>
+                <line x1="16" y1="11" x2="22" y2="11"></line>
+            </svg>
+            ADMIN
         </a>
         }
         @if (authService.isAuthenticated()) {

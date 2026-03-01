@@ -35,7 +35,9 @@
                             <div class="l-footer">
                                 <span class="l-date">{{ formatDate(purchase.purchaseDate) }}</span>
                                 <div class="l-actions">
-                                    <button class="btn-report" (click)="openReportModal(purchase)">Report Issue</button>
+                                    <button class="btn-report" (click)="openReportModal(purchase)">
+                                        Report Issue
+                                    </button>
                                     <button class="btn-remove-purchase" (click)="removePurchase(purchase.movieId)"
                                         title="Remove from library">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
