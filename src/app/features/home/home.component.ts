@@ -92,7 +92,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.titleService.setTitle('Movieland | Premium Cinematic Workspace');
+    this.titleService.setTitle('movieLand | Premium Cinematic Workspace');
     this.metaService.updateTag({ name: 'description', content: 'Experience movies through your mood with our high-fidelity selector.' });
 
     // Load available genres for the pills

@@ -83,7 +83,7 @@ export class AuthService {
   readonly isAdmin = computed(() => {
     const user = this.currentUser();
     if (!user) return false;
-    return user.role === 'ADMIN' || user.email.toLowerCase() === 'mariami.tediashvili9076@hum.tsu.edu.ge'.toLowerCase();
+    return user.role === 'ADMIN' || user.email.toLowerCase() === 'tediashvilimariam9@gmail.com'.toLowerCase();
   });
   private readonly accessToken = signal<string | null>(null);
 

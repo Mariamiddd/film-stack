@@ -3,12 +3,25 @@
     <header class="archival-header-bar">
         <div class="header-left">
             <span class="analog-label">ADMIN DASHBOARD</span>
-            <h2 class="sidebar-title">MANAGEMENT HUB</h2>
+
+            @if (authService.currentUser(); as user) {
+            <div class="admin-identity">
+                <div class="avatar-frame">
+                    <img [src]="user.avatar || 'https://ui-avatars.com/api/?name=' + user.firstName + '+' + user.lastName + '&background=BF4646&color=fff'"
+                        alt="Admin" class="admin-photo">
+                    <div class="online-indicator"></div>
+                </div>
+                <div class="identity-text">
+                    <span class="admin-welcome">CONTROLLED BY</span>
+                    <span class="admin-full-name">{{ user.firstName }} {{ user.lastName }}</span>
+                </div>
+            </div>
+            }
         </div>
 
         <div class="header-right">
             <button class="nav-item logout-nav-item" (click)="authService.signOut()">
-                <span class="vcr-icon">EJECT</span> LOGOUT
+                <span>LOGOUT</span>
             </button>
         </div>
     </header>
@@ -53,7 +66,7 @@
                         <div class="smart-action-button">
                             @if (report.status === 'pending') {
                             <button class="action-btn-retro red large-pill-minimal" (click)="startWorking(report)">
-                                <span class="vcr-icon">▶</span> START HELPING
+                                <span class="vcr-icon">▶</span> REVIEW REPORT
                             </button>
                             } @else if (report.status === 'in-progress') {
                             <button class="action-btn-retro teal large-pill-minimal" (click)="resolveReport(report)">
@@ -67,7 +80,7 @@
 
                     <div class="messenger-workspace">
                         <div class="details-strip">
-                            <p><strong>USER SAYS:</strong> "{{ report.details }}"</p>
+                            <p><strong>USER MESSAGE:</strong> "{{ report.details }}"</p>
                         </div>
 
                         <div class="chat-system-minimal">

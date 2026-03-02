@@ -72,7 +72,7 @@
                     <div class="credit-row" style="flex-direction: column; gap: 8px;">
                         <span class="credit-label">Top Cast</span>
                         <div class="top-cast-grid">
-                            @for (actor of cast().slice(0, 3); track actor.id) {
+                            @for (actor of cast().slice(0, 4); track actor.id) {
                             <div class="cast-card">
                                 <div class="cast-img">
                                     <img [src]="getCastImageUrl(actor.profile_path)" [alt]="actor.name">
@@ -91,7 +91,7 @@
             <!-- Right Column -->
             <div class="details-right">
                 <div class="imdb-action-panel card-flat">
-                    <button class="btn-figma btn-outline-figma full-w" (click)="toggleWishlist()"
+                    <button class="btn-figma btn-outline-figma" (click)="toggleWishlist()"
                         [class.active]="isInWishlist()">
                         @if (isInWishlist()) {
                         <span style="color: var(--text-highlight); margin-right: 8px;">✔</span> In Library
@@ -100,7 +100,7 @@
                         }
                     </button>
 
-                    <button class="btn-figma btn-outline-figma full-w" (click)="toggleFavorite()"
+                    <button class="btn-figma btn-outline-figma" (click)="toggleFavorite()"
                         [class.active]="isInFavorites()">
                         <span style="margin-right: 8px;">★</span> {{ isInFavorites() ? 'Favorited' : 'Mark as Favorite'
                         }}

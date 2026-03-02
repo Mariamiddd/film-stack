@@ -8,7 +8,7 @@
 }
 
 .settings-entry {
-    background: #fff;
+    background: var(--bg-secondary);
     border: 1.5px solid var(--border-analog);
     border-radius: 8px;
     padding: 32px;
@@ -16,16 +16,6 @@
     overflow: hidden;
 }
 
-.settings-entry::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--text-highlight);
-    opacity: 0.1;
-}
 
 .settings-entry h4 {
     font-family: var(--font-mono);
@@ -71,7 +61,7 @@
 }
 
 .figma-input {
-    background: var(--bg-secondary);
+    background: var(--bg-main);
     border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 6px;
     padding: 10px 14px;
@@ -82,7 +72,7 @@
 }
 
 .figma-input:focus {
-    background: #fff;
+    background: var(--bg-main);
     border-color: var(--text-highlight);
     box-shadow: 0 0 0 3px rgba(191, 70, 70, 0.1);
     outline: none;
@@ -113,6 +103,14 @@ select.figma-input {
 .danger-btn {
     width: fit-content;
     padding: 0 32px;
+}
+
+.btn-accent-figma {
+    width: 220px;
+    height: 40px;
+    align-self: center;
+    font-size: 0.75rem;
+    margin-top: 10px;
 }
 
 /* Animations & Banners */

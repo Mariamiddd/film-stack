@@ -4,15 +4,18 @@
     /* The Imperial Vault Palette */
     --bg-secondary: #FFF7CD;
     --bg-main: #fdf6da;
-    --text-analog: #674011;
+    --text-analog: #675c51;
     --text-highlight: #BF4646;
 
     --primary-glow: #c54646;
     --header-accent: #0e0801ce;
     --header-bg: var(--text-highlight);
     --hover: #b80d0d;
+    --message-sender: #CA7373;
+    --message-receiver: #6A7E3F;
     --bg-app-tint: transparent;
     --glow-opacity: 0.18;
+    --chat-header-background: #c1ad75;
 
     --font-mono: 'Space Mono', monospace;
     --font-sans: 'Inter', sans-serif;
@@ -304,14 +307,15 @@ button {
 }
 
 .btn-primary-figma {
-    background: #fff;
-    color: #000;
-    border: 1px solid #fff;
+    background: var(--border-analog);
+    color: var(--bg-main);
+    border: 1px solid var(--text-analog);
 }
 
 .btn-primary-figma:hover {
-    background: var(--primary-glow);
-    border-color: var(--primary-glow);
+    background: var(--bg-main);
+    color: var(--border-analog);
+    border: 1px solid var(--border-analog);
 }
 
 .btn-outline-figma {
