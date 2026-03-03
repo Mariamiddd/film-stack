@@ -7,13 +7,14 @@
     /* The Imperial Vault Palette */
     --bg-secondary: #FFF7CD;
     --bg-main: #fdf6da;
+    --bg-footer: #2b0a0a;
     --text-analog: #675c51;
     --text-highlight: #BF4646;
 
     --primary-glow: #c54646;
     --header-accent: #0e0801ce;
     --header-bg: var(--text-highlight);
-    --hover: #b80d0d;
+    --hover: #A82323;
     --message-sender: #CA7373;
     --message-receiver: #6A7E3F;
     --bg-app-tint: transparent;

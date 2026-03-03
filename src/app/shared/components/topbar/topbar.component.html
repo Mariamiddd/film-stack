@@ -50,16 +50,13 @@
 
     <div class="user-actions">
         <!-- Minimalist Expandable Search -->
-        <div class="search-wrapper" [class.expanded]="isSearchOpen()">
-            <button class="action-btn" (click)="toggleSearch()" aria-label="Toggle Search">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </button>
-
-        </div>
+        <button class="action-btn" (click)="toggleSearch()" aria-label="Toggle Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </button>
 
         <div class="notification-wrapper">
             <button class="action-btn" (click)="toggleInbox()">
@@ -225,8 +222,8 @@
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
             <input type="text" placeholder="Type to search movies and series..." class="air-input"
-                [ngModel]="searchService.query()" (ngModelChange)="onSearchInput($event)" (focus)="onSearchFocus()"
-                (keydown)="onKeyDown($event)" #searchInput />
+                [ngModel]="searchService.query()" (ngModelChange)="onSearchInput($event)" (keydown)="onKeyDown($event)"
+                #searchInput />
             <button class="close-air" (click)="toggleSearch()">✕</button>
         </div>
 

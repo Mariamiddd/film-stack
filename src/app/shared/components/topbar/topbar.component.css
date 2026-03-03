@@ -36,12 +36,11 @@
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 1.3rem;
+    gap: 8px;
+    font-size: 1.1rem;
     font-weight: 800;
     color: var(--text-highlight);
     letter-spacing: 0.1em;
-    text-decoration: none;
     white-space: nowrap;
     font-family: var(--font-serif);
 }
@@ -50,9 +49,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
 }
 
 .logo-icon img {
@@ -337,14 +336,14 @@
 
 .badge {
     position: absolute;
-    top: -4px;
-    right: -4px;
+    top: -2px;
+    right: -2px;
     background: var(--text-highlight);
     color: var(--bg-main);
-    font-size: 0.6rem;
+    font-size: 0.5rem;
     font-weight: 800;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -490,12 +489,6 @@
     color: rgba(255, 255, 255, 0.2);
 }
 
-.inbox-empty .vcr-icon {
-    font-size: 1.5rem;
-    margin-bottom: 12px;
-    display: block;
-}
-
 .inbox-empty p {
     font-size: 0.75rem;
     margin: 0;
@@ -562,13 +555,6 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 32px;
-}
-
-.analog-label {
-    font-size: 0.9rem;
-    font-weight: 800;
-    color: var(--text-highlight);
-    letter-spacing: 0.1em;
 }
 
 .mobile-only-logo {
@@ -654,17 +640,24 @@
         padding: 0 16px;
     }
 
+    .topbar-left {
+        gap: 4px;
+    }
+
+
     .topbar-left .logo {
-        display: none;
+        display: flex;
+        gap: 2px;
     }
 
     .logo-text {
-        font-size: 1.2rem;
+        font-size: 0.95rem;
     }
 
-
-
-
+    .logo-icon {
+        width: 20px !important;
+        height: 20px !important;
+    }
 
     .user-actions {
         gap: 8px;
@@ -803,12 +796,12 @@
     }
 
     .logo-text {
-        font-size: 1.2rem;
+        font-size: 0.9rem;
     }
 
     .logo-icon {
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
     }
 
     .logo {

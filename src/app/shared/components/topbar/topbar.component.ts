@@ -8,7 +8,6 @@ import { TmdbService, Movie } from '../../../core/services/tmdb.service';
 import { ReportService } from '../../../core/services/report.service';
 import { FormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject, switchMap, of } from 'rxjs';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-topbar',
@@ -25,11 +24,9 @@ export class TopbarComponent {
   readonly searchService = inject(SearchService);
   readonly tmdb = inject(TmdbService);
   readonly reportService = inject(ReportService);
-  private readonly el = inject(ElementRef);
   private readonly router = inject(Router);
 
   showInbox = signal(false);
-  showResults = signal(false);
   isSearchOpen = signal(false);
   searchResults = signal<Movie[]>([]);
   selectedIndex = signal(-1);
@@ -64,20 +61,14 @@ export class TopbarComponent {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
-
     if (!target.closest('.notification-wrapper')) {
       this.showInbox.set(false);
-    }
-
-    if (!this.el.nativeElement.contains(target)) {
-      this.showResults.set(false);
     }
   }
 
   onSearchInput(query: string) {
     this.searchService.setQuery(query);
     this.searchSubject.next(query);
-    this.showResults.set(true);
     this.selectedIndex.set(-1);
   }
 
@@ -105,20 +96,12 @@ export class TopbarComponent {
     }
   }
 
-  onSearchFocus() {
-    if (this.searchService.query()) {
-      this.showResults.set(true);
-    }
-  }
-
   clearSearch() {
     this.searchService.setQuery('');
     this.searchResults.set([]);
-    this.showResults.set(false);
   }
 
   closeAll() {
-    this.showResults.set(false);
     this.isSearchOpen.set(false); // Close search when navigating
     this.layout.closeSidebar();
   }

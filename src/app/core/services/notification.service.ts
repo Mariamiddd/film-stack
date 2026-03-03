@@ -16,7 +16,7 @@ export interface InboxItem {
     message: string;
     timestamp: Date;
     read: boolean;
-    type: 'purchase' | 'favorite' | 'system';
+    type: 'purchase' | 'favorite' | 'system' | 'watchlist';
 }
 
 @Injectable({
@@ -80,7 +80,7 @@ export class NotificationService {
     }
 
     // Inbox Management
-    addInboxItem(title: string, message: string, type: 'purchase' | 'favorite' | 'system') {
+    addInboxItem(title: string, message: string, type: 'purchase' | 'favorite' | 'system' | 'watchlist') {
         const newItem: InboxItem = {
             id: crypto.randomUUID(),
             title,
@@ -94,7 +94,8 @@ export class NotificationService {
         this.saveInbox();
 
         // Also show a toast notification for immediate feedback
-        this.show(title, message, type === 'purchase' || type === 'favorite' ? 'success' : 'info');
+        const toastType = (type === 'purchase' || type === 'favorite' || type === 'watchlist') ? 'success' : 'info';
+        this.show(title, message, toastType);
     }
 
     /**

@@ -91,7 +91,7 @@ export class WishlistService {
         this.notificationService.addInboxItem(
             'Added to Watchlist',
             `"${movieTitle}" has been added to your watchlist.`,
-            'system'
+            'watchlist'
         );
 
         return true;
