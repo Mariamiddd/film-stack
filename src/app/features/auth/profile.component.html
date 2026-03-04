@@ -7,7 +7,7 @@
 
     <!-- Sidebar Navigation -->
     <app-profile-sidebar class="profile-sidebar-col" [activeTab]="activeTab()" [unreadMessages]="unreadMessages()"
-        (tabChange)="activeTab.set($event)">
+        [purchaseCount]="purchaseCount()" [reportCount]="reportCount()" (tabChange)="activeTab.set($event)">
     </app-profile-sidebar>
 
     <!-- Main Workspace Area -->
@@ -110,13 +110,29 @@
             <!-- Support Messages -->
             @if (activeTab() === 'messages') {
             <div class="info-section">
-                <h3 class="section-label">Support Communications</h3>
+                <div class="section-header-row"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 class="section-label" style="margin: 0;">Support Communications</h3>
+                    @if (unreadMessages() > 0) {
+                    <button class="text-btn" (click)="markAllSupportRead()"
+                        style="font-size: 0.7rem; color: var(--text-highlight);">
+                        MARK ALL AS READ
+                    </button>
+                    }
+                </div>
                 <div class="reports-history">
                     @for (report of myReports(); track report.id) {
                     <div class="report-entry card-flat no-padding">
                         <div class="pane-header-actions-profile">
                             <div class="header-main-meta-profile">
-                                <h4>REPORT ID: {{ report.id.substring(0,8) }}</h4>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <h4>REPORT ID: {{ report.id.substring(0,8) }}</h4>
+                                    @if (getUnreadCount(report.id) > 0) {
+                                    <span class="badge-mini" style="margin: 0; transform: scale(0.9);">
+                                        {{ getUnreadCount(report.id) }}
+                                    </span>
+                                    }
+                                </div>
                                 <span class="report-type-profile">{{ report.movieTitle }} · {{ report.reason }}</span>
                             </div>
                             <span class="status-pill-profile {{ report.status }}">{{ report.status }}</span>
@@ -130,8 +146,9 @@
                             <div class="profile-chat-logs">
                                 @for (msg of getMessages(report.id); track msg.id) {
                                 <div class="bubble-wrapper" [class.me]="msg.senderId !== 'admin'">
-                                    <span class="msg-sender-label">{{ msg.senderId === 'admin' ? 'SUPPORT TEAM' : 'YOU'
-                                        }}</span>
+                                    <span class="msg-sender-label">
+                                        {{ msg.senderId === 'admin' ? 'SUPPORT TEAM' : 'YOU' }}
+                                    </span>
                                     <div class="bubble-container-inner">
                                         <div class="bubble">
                                             <p>{{ msg.message }}</p>

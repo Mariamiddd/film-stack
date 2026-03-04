@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit, effect } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, effect, untracked } from '@angular/core';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService, User } from '../../core/services/auth.service';
@@ -58,13 +58,34 @@ export class ProfileComponent {
   favoriteCount = computed(() => this.favoriteItems().length);
 
   myReports = computed(() => this.reportService.reports().filter(r => r.userId === this.user()?.id));
-  unreadMessages = computed(() => this.reportService.messages().filter(m => m.receiverId === this.user()?.id && !m.read).length);
+  reportCount = computed(() => this.myReports().length);
+  unreadMessages = computed(() => {
+    const chatUnread = this.reportService.messages().filter(m => m.receiverId === this.user()?.id && !m.read).length;
+    const systemUnread = this.notificationService.inbox().filter(i => i.type === 'system' && !i.read).length;
+    return chatUnread + systemUnread;
+  });
 
   constructor() {
+    // Scroll effect - only re-run when messages length changes 
     effect(() => {
-      this.reportService.messages();
-      this.scrollToBottom();
+      // We only want to scroll when the count of messages changes
+      const msgCount = this.reportService.messages().length;
+      if (msgCount > 0) {
+        this.scrollToBottom();
+      }
     });
+
+    // Mark as read effect - avoid loops
+    // REMOVED: Auto-clearing on tab entry was confusing the user by hiding the notifications too fast.
+    // We now use manual clearing via markAllSupportRead() or when replying.
+  }
+
+  markAllSupportRead() {
+    const user = this.user();
+    if (user) {
+      this.reportService.markMessagesAsRead(user.id);
+      this.notificationService.markTypeAsRead('system');
+    }
   }
 
   selectedPurchase = signal<any | null>(null);
@@ -359,6 +380,14 @@ export class ProfileComponent {
   deleteMessage(messageId: string) {
     this.reportService.deleteMessage(messageId);
     this.notificationService.show('Success', 'Message deleted', 'info');
+  }
+
+  getUnreadCount(reportId: string): number {
+    return this.reportService.messages().filter(m =>
+      m.reportId === reportId &&
+      m.receiverId === this.user()?.id &&
+      !m.read
+    ).length;
   }
 
   removePurchase(movieId: number) {

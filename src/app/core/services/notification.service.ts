@@ -148,6 +148,20 @@ export class NotificationService {
         this.saveInbox();
     }
 
+    markTypeAsRead(type: 'purchase' | 'favorite' | 'system' | 'watchlist') {
+        let changed = false;
+        this.inboxSignal.update(items =>
+            items.map(item => {
+                if (item.type === type && !item.read) {
+                    changed = true;
+                    return { ...item, read: true };
+                }
+                return item;
+            })
+        );
+        if (changed) this.saveInbox();
+    }
+
     deleteItem(id: string) {
         this.inboxSignal.update(items => items.filter(item => item.id !== id));
         this.saveInbox();

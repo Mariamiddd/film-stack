@@ -9,6 +9,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class ProfileSidebarComponent {
     @Input({ required: true }) activeTab: string = 'purchases';
     @Input({ required: true }) unreadMessages: number = 0;
+    @Input() purchaseCount: number = 0;
+    @Input() reportCount: number = 0;
     @Output() tabChange = new EventEmitter<any>();
 
     setTab(tab: any) {

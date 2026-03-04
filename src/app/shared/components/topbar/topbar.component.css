@@ -751,6 +751,22 @@
     white-space: nowrap;
 }
 
+@media (max-width: 768px) {
+    .Btn:hover {
+        width: 30px !important;
+        border-radius: 50% !important;
+    }
+
+    .Btn:hover .sign {
+        width: 100% !important;
+        padding-left: 0 !important;
+    }
+
+    .Btn:hover .text {
+        display: none !important;
+    }
+}
+
 
 .Btn:hover {
     width: 130px;

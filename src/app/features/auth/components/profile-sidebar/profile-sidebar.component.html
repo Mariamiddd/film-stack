@@ -2,6 +2,9 @@
     <nav class="ws-nav-list card-flat">
         <button class="ws-nav-item" [class.active]="activeTab === 'purchases'" (click)="setTab('purchases')">
             My Purchases
+            <div class="badge-group">
+                @if (purchaseCount > 0) { <span class="badge-mini secondary">{{ purchaseCount }}</span> }
+            </div>
         </button>
         <button class="ws-nav-item" [class.active]="activeTab === 'watchlist'" (click)="setTab('watchlist')">
             Watchlist
@@ -15,7 +18,10 @@
         </button>
         <button class="ws-nav-item" [class.active]="activeTab === 'messages'" (click)="setTab('messages')">
             Support Messages
-            @if (unreadMessages > 0) { <span class="badge-mini">{{ unreadMessages }}</span> }
+            <div class="badge-group">
+                @if (reportCount > 0) { <span class="badge-mini secondary">{{ reportCount }}</span> }
+                @if (unreadMessages > 0) { <span class="badge-mini">{{ unreadMessages }}</span> }
+            </div>
         </button>
     </nav>
 </aside>

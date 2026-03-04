@@ -189,6 +189,8 @@
     transition: all 0.2s ease;
     text-transform: uppercase;
     font-family: var(--font-mono);
+    white-space: nowrap;
+    /* Prevent text from wrapping to column */
 }
 
 .btn-report-custom:hover {

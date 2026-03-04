@@ -177,7 +177,7 @@
             (click)="closeAll()">WATCHLIST</a>
         <a routerLink="/auth/profile" [queryParams]="{tab: 'favorites'}" class="mobile-link"
             (click)="closeAll()">FAVORITES</a>
-        <div class="mobile-btn-wrapper" style="margin-top: 16px; align-items: center; gap: 16px;">
+        <div class="mobile-btn-wrapper" style="margin-top: 16px; align-items: center; justify-content: flex-start;">
             <button class="Btn logout-btn" (click)="authService.signOut(); closeAll()">
                 <div class="sign"><svg viewBox="0 0 512 512">
                         <path
@@ -185,15 +185,10 @@
                         </path>
                     </svg></div>
             </button>
-            <button class="mobile-link"
-                style="border: none; padding: 0; cursor: pointer; background: transparent; width: auto; font-family: inherit; font-size: 1rem;"
-                (click)="authService.signOut(); closeAll()">
-                SIGN OUT
-            </button>
         </div>
         } @else {
         <div class="mobile-divider"></div>
-        <div class="mobile-btn-wrapper" style="margin-top: 16px; align-items: center; gap: 16px;">
+        <div class="mobile-btn-wrapper" style="margin-top: 16px; align-items: center; justify-content: flex-start;">
             <a routerLink="/auth/sign-in" class="Btn login-btn" (click)="closeAll()">
                 <div class="sign">
                     <svg viewBox="0 0 512 512">
@@ -202,9 +197,6 @@
                         </path>
                     </svg>
                 </div>
-            </a>
-            <a routerLink="/auth/sign-in" class="mobile-link" style="border: none; padding: 0;" (click)="closeAll()">
-                SIGN IN
             </a>
         </div>
         }

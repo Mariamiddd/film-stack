@@ -148,6 +148,20 @@ export class ReportService {
         this.saveData();
     }
 
+    markMessagesAsRead(userId: string) {
+        let changed = false;
+        this.messagesSignal.update(messages =>
+            messages.map(m => {
+                if (m.receiverId === userId && !m.read) {
+                    changed = true;
+                    return { ...m, read: true };
+                }
+                return m;
+            })
+        );
+        if (changed) this.saveData();
+    }
+
     getMessagesForReport(reportId: string) {
         return computed(() => this.messagesSignal().filter(m => m.reportId === reportId).sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()));
     }
