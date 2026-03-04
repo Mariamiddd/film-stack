@@ -15,6 +15,7 @@ import { Title, Meta } from '@angular/platform-browser';
 import { ProfileHeaderComponent } from './components/profile-header/profile-header.component';
 import { ProfileSidebarComponent } from './components/profile-sidebar/profile-sidebar.component';
 import { AccountSettingsComponent } from './components/account-settings/account-settings.component';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-profile',
@@ -26,7 +27,8 @@ import { AccountSettingsComponent } from './components/account-settings/account-
     DatePipe,
     ProfileHeaderComponent,
     ProfileSidebarComponent,
-    AccountSettingsComponent
+    AccountSettingsComponent,
+    ConfirmDialogComponent
   ],
   templateUrl: './profile.component.html',
   styleUrls: ['./auth.css', './profile.component.css']
@@ -80,6 +82,22 @@ export class ProfileComponent {
   isDeleting = signal(false);
   successMessage = signal<string | null>(null);
   errorMessage = signal<string | null>(null);
+
+  // Confirm Dialog State
+  confirmDialogState = signal<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    confirmText: string;
+    action: 'deleteAccount' | 'removeMovie' | null;
+    data?: any;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    confirmText: '',
+    action: null
+  });
 
   ngOnInit() {
     this.titleService.setTitle('My Profile | Movieland');
@@ -265,19 +283,23 @@ export class ProfileComponent {
   }
 
   confirmDelete() {
-    const confirmed = confirm(
-      'Are you sure you want to delete your account? This action cannot be undone.'
-    );
+    this.confirmDialogState.set({
+      isOpen: true,
+      title: 'Deactivate account',
+      message: 'Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.',
+      confirmText: 'Deactivate',
+      action: 'deleteAccount'
+    });
+  }
 
-    if (confirmed) {
-      this.isDeleting.set(true);
-      this.authService.deleteAccount().subscribe({
-        error: (error) => {
-          this.isDeleting.set(false);
-          this.errorMessage.set(error.error?.error || 'Failed to delete account');
-        }
-      });
-    }
+  private executeDeleteAccount() {
+    this.isDeleting.set(true);
+    this.authService.deleteAccount().subscribe({
+      error: (error) => {
+        this.isDeleting.set(false);
+        this.errorMessage.set(error.error?.error || 'Failed to delete account');
+      }
+    });
   }
 
   openReportModal(purchase: any) {
@@ -327,7 +349,7 @@ export class ProfileComponent {
 
   private scrollToBottom() {
     setTimeout(() => {
-      const chatContainers = document.querySelectorAll('.chat-bubbles');
+      const chatContainers = document.querySelectorAll('.profile-chat-logs');
       chatContainers.forEach(container => {
         container.scrollTop = container.scrollHeight;
       });
@@ -343,9 +365,33 @@ export class ProfileComponent {
     const purchase = this.purchaseService.getPurchase(movieId);
     if (!purchase) return;
 
-    if (confirm(`Remove "${purchase.movieTitle}" from your library? This action cannot be undone.`)) {
-      this.purchaseService.removePurchase(movieId);
-      this.notificationService.show('Success', 'Movie removed from library', 'success');
+    this.confirmDialogState.set({
+      isOpen: true,
+      title: 'Remove Movie',
+      message: `Are you sure you want to remove "${purchase.movieTitle}" from your library? This action cannot be undone.`,
+      confirmText: 'Remove',
+      action: 'removeMovie',
+      data: { movieId }
+    });
+  }
+
+  private executeRemoveMovie(movieId: number) {
+    this.purchaseService.removePurchase(movieId);
+    this.notificationService.show('Success', 'Movie removed from library', 'success');
+  }
+
+  handleConfirm() {
+    const state = this.confirmDialogState();
+    this.confirmDialogState.update(s => ({ ...s, isOpen: false }));
+
+    if (state.action === 'deleteAccount') {
+      this.executeDeleteAccount();
+    } else if (state.action === 'removeMovie' && state.data) {
+      this.executeRemoveMovie(state.data.movieId);
     }
+  }
+
+  handleCancel() {
+    this.confirmDialogState.update(s => ({ ...s, isOpen: false }));
   }
 }

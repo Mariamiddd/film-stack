@@ -45,8 +45,8 @@
         }
 
         <div class="ws-grid-inner">
-            @for (movie of gridMovies(); track movie.id) {
-            <app-movie-card [movie]="movie" type="tv"></app-movie-card>
+            @for (movie of gridMovies(); track movie.id; let idx = $index) {
+            <app-movie-card [movie]="movie" type="tv" [priority]="idx < 6"></app-movie-card>
             }
         </div>
 

@@ -51,8 +51,9 @@
           </div>
 
           <div class="ws-grid-inner scroll-container" #scrollContainer>
-            @for (movie of validMovies(); track movie.id) {
-            <app-movie-card [movie]="movie" [type]="movie.media_type === 'tv' ? 'tv' : 'movie'"></app-movie-card>
+            @for (movie of validMovies(); track movie.id; let idx = $index) {
+            <app-movie-card [movie]="movie" [type]="movie.media_type === 'tv' ? 'tv' : 'movie'"
+              [priority]="idx < 4"></app-movie-card>
             }
           </div>
         </div>

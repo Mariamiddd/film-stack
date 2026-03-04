@@ -18,6 +18,7 @@ import { ThemeService } from '../../../core/services/theme.service';
 export class MovieCardComponent {
   movie = input.required<Movie>();
   type = input<'movie' | 'tv'>('movie');
+  priority = input<boolean>(false);
 
   private readonly tmdbService = inject(TmdbService);
   private readonly wishlistService = inject(WishlistService);

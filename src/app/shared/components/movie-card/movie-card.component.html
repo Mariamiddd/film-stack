@@ -2,7 +2,7 @@
     <div class="poster-wrapper">
 
         <img [src]="getPosterUrl(movie().poster_path)" [alt]="movie().title || movie().name" class="poster-image"
-            loading="lazy" />
+            [loading]="priority() ? 'eager' : 'lazy'" />
 
         <div class="card-rating">
             {{ movie().vote_average.toFixed(1) }}

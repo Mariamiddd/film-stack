@@ -14,7 +14,7 @@ export const MOODS: Mood[] = [
     { id: 'Curious', label: 'Curious', genres: ['878', '9648'], description: 'Unlocking new worlds' },
     { id: 'Inspiring', label: 'Inspiring', genres: ['36', '10752', '99'], description: 'Greatness in the making' },
     { id: 'Melancholic', label: 'Melancholic', genres: ['18', '10770'], description: 'Beauty in sadness' },
-    { id: 'Gutsy', label: 'Gutsy', genres: ['80', '53'], description: 'High stakes and adrenaline' },
+    { id: 'Couragous', label: 'Couragous', genres: ['80', '53'], description: 'High stakes and adrenaline' },
     { id: 'Excited', label: 'Excited', genres: ['28', '12'], description: 'Imperial adventure awaits' },
     { id: 'Dangerous', label: 'Dangerous', genres: ['27', '53', '9648'], description: 'Into the darkness' }
 ];

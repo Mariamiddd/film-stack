@@ -3,8 +3,8 @@ import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 /**
- * Protects routes from unauthenticated users.
- * If the user is not logged in, redirects to the sign-in page.
+//  * Protects routes from unauthenticated users.
+//  * If the user is not logged in, redirects to the sign-in page.
  */
 export const authGuard: CanActivateFn = (route, state) => {
     const authService = inject(AuthService);

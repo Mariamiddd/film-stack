@@ -300,10 +300,10 @@
     display: flex;
     flex-direction: column;
     padding: 0 !important;
-    height: 750px;
-    max-height: 85vh;
+    height: 650px;
+    max-height: 70vh;
     overflow: hidden;
-    border: 1px solid rgba(10, 9, 14, 0.205);
+    border: 1px solid rgba(191, 70, 70, 0.1);
     background: #fff;
     border-radius: 12px;
 }
@@ -314,9 +314,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 24px;
+    padding: 12px 20px;
     background: var(--chat-header-background);
     border-bottom: 2px solid var(--bg-secondary);
+    gap: 12px;
 }
 
 .header-main-meta h4 {
@@ -328,11 +329,12 @@
 
 .report-type {
     display: block;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 800;
     color: var(--bg-main);
-    margin-top: 2px;
+    margin-top: 1px;
     font-family: var(--font-serif);
+    line-height: 1.2;
 }
 
 .messenger-workspace {
@@ -420,11 +422,15 @@
 .badge-resolved-success {
     background: #e6fffa;
     color: #234e52;
-    padding: 6px 16px;
+    padding: 4px 12px;
     border-radius: 30px;
     font-weight: 800;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     border: 1px solid #b2f5ea;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .closed-convo-notice {
@@ -450,7 +456,20 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    max-width: 80%;
+    max-width: 85%;
+    animation: bubbleSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes bubbleSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .admin-wrapper {
@@ -507,14 +526,14 @@
 }
 
 .admin-wrapper .msg-bubble {
-    background: var(--message-sender);
-    color: #fff;
+    background: var(--message-receiver);
+    color: var(--bg-main);
     border-radius: 18px 18px 4px 18px;
 }
 
 .user-wrapper .msg-bubble {
-    background: var(--message-receiver);
-    color: var(--bg-main);
+    background: var(--message-sender);
+    color: #fff;
     border-radius: 18px 18px 18px 4px;
 }
 
@@ -581,7 +600,6 @@
         padding: 10px 16px !important;
         white-space: nowrap;
         border-right: none !important;
-        border-bottom: 4px solid transparent;
     }
 }
 
@@ -628,20 +646,29 @@
 }
 
 @media (max-width: 600px) {
+    .modern-chat-layout {
+        height: 500px;
+        max-height: 60vh;
+    }
+
     .modern-input-row {
         gap: 8px !important;
         padding: 6px 12px !important;
     }
 
     .send-icon-btn {
-        width: 30px !important;
-        height: 30px !important;
+        width: 32px !important;
+        height: 32px !important;
     }
 
     .send-icon-btn svg {
         width: 14px !important;
         height: 14px !important;
         margin-left: -1px !important;
+    }
+
+    .chat-logs-modern {
+        padding: 10px;
     }
 }
 

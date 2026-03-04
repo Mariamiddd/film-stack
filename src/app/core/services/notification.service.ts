@@ -130,7 +130,7 @@ export class NotificationService {
         // If the current user is the recipient, update the signal
         if (this.currentUserId === userId) {
             this.inboxSignal.set(items.map(i => ({ ...i, timestamp: new Date(i.timestamp) })));
-            this.show(title, message, 'info');
+            this.show(title, message, 'success');
         }
     }
 

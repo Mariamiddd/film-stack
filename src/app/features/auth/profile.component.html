@@ -24,10 +24,11 @@
                 </div>
                 } @else {
                 <div class="ws-grid-inner">
-                    @for (purchase of purchases(); track purchase.movieId) {
+                    @for (purchase of purchases(); track purchase.movieId; let idx = $index) {
                     <div class="license-card card-flat" [routerLink]="getPurchaseLink(purchase)">
                         <div class="license-poster" [routerLink]="getPurchaseLink(purchase)">
-                            <img [src]="getPosterUrl(purchase.posterPath)" [alt]="purchase.movieTitle" loading="lazy">
+                            <img [src]="getPosterUrl(purchase.posterPath)" [alt]="purchase.movieTitle"
+                                [loading]="idx < 4 ? 'eager' : 'lazy'">
                             <div class="license-tag">Active</div>
                         </div>
                         <div class="license-meta card-content">
@@ -225,3 +226,8 @@
     </div>
     }
 </div>
+
+<app-confirm-dialog [isOpen]="confirmDialogState().isOpen" [title]="confirmDialogState().title"
+    [message]="confirmDialogState().message" [confirmText]="confirmDialogState().confirmText"
+    (confirmed)="handleConfirm()" (cancelled)="handleCancel()">
+</app-confirm-dialog>

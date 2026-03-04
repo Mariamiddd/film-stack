@@ -149,7 +149,7 @@ export class AuthService {
           email: credentials.email,
           age: 18,
           gender: 'OTHER',
-          role: credentials.email === 'mariami.tediashvili9076@hum.tsu.edu.ge' ? 'ADMIN' : 'USER',
+          role: credentials.email === 'tediashvilimariam9@gmail.com' ? 'ADMIN' : 'USER',
           phone: '',
           address: '',
           zipcode: '',
